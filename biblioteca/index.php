@@ -20,7 +20,7 @@
 
                 echo "<table class='tablaResultados'>
                         <tr>
-                            <th colspan='8'>
+                            <th colspan='9'>
                                 LIBROS GUARDADOS
                             </th>
                         </tr>
@@ -39,7 +39,8 @@
                 while ($fila = $consulta->fetch_object()) {
                     echo "<tr><td>" . $fila->idLibro . "</td><td>" . $fila->titulo . "</td><td>" . $fila->genero . 
                         "</td><td>" . $fila->pais . "</td><td>" . $fila->anyo . "</td><td>" . $fila->numPaginas . 
-                        "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td><td><a class='eliminar' onclick='eliminar($fila->idLibro)'>Eliminar</a></td></tr>";
+                        "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td><td><a class='eliminar' onclick='borrar($fila->idLibro)'>Eliminar</a></td>\n
+                        <td><a class='modificar' onclick='modificar($fila->idLibro)'>Modificar</a></td></tr>";
                 }
 
                 echo "</table>";
@@ -370,10 +371,14 @@
 
   </body>
   <script>
-      function eliminar(idLibro) {
+      function borrar(idLibro) {
           if (confirm("¿Estás seguro?")) {
               location.href = "index.php?action=eliminarLibro&idLibro=" + idLibro;
           }
+      }
+
+      function modificar(idLibro) {
+          location.href = "index.php?action=formularioModificar2&idLibro=" + idLibro;
       }
 </script>   
 </html>
