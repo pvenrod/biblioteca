@@ -1,0 +1,107 @@
+body {
+    font-family: arial;
+}
+
+.menu {
+    padding: 10px 30px 30px 30px;
+    border-radius: 30px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 30px;
+    width: 350px;
+    background-color: #ffe9e9;
+    box-shadow: 0px 0px 5px grey;
+    text-align: center;
+}
+.menu:hover {
+    background-color: #fddede;
+    box-shadow: 0px 0px 10px grey;
+}
+
+h1 {
+    color: red;
+}
+
+.menu a, .menu a:visited:hover {
+    color: red;
+}
+
+.menu a:visited {
+    color: rgb(146, 0, 0);
+}
+
+.tablaResultados {
+    padding: 10px;
+    border-radius: 30px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 30px;
+    width: 800px;
+    background-color: #ffe9e9;
+    box-shadow: 0px 0px 5px grey;
+    text-align: center;
+}
+
+.tablaResultados th {
+    color: red;
+    border-bottom: 2px solid red;
+    font-size: 24px;
+}
+
+.filaArriba {
+    font-weight: 700;
+}
+
+.volverAtras {
+    padding: 20px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-color: rgb(255, 203, 203);
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    outline: none;
+}
+.volverAtras:hover {
+    background-color: rgb(255, 234, 234);
+    box-shadow: 0px 0px 5px grey;
+}
+
+input[type="submit"] {
+    padding: 10px 15px 10px 15px;
+    background-color: rgb(181, 226, 177);
+    border: none;
+    border-radius: 5px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+}
+input[type="submit"]:hover {
+    box-shadow: 0px 0px 5px grey;
+    background-color: rgb(103, 167, 78);
+}
+
+.exito {
+    padding: 30px;
+    border-radius: 30px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 30px;
+    width: 350px;
+    background-color: #eeffe9;
+    box-shadow: 0px 0px 5px grey;
+    text-align: center;
+    font-size: 20px;
+    color: green;
+    font-weight: 700;
+}
+.exito:hover {
+    background-color: #dffdde;
+    box-shadow: 0px 0px 10px grey;
+}
