@@ -7,20 +7,7 @@
   <body>
     <?php
     if (!isset($_REQUEST["action"])) {
-        echo   "<div class='menu'><h1>Biblioteca Veneruso</h1>
-            <h2>Menú principal</h2>
-            <p><a href='index.php?action=consultarLista'>Consultar lista de libros</a></p>
-            <p><a href='index.php?action=formularioAltaLibros'>Alta de libros</a></p>
-            <p><a href='index.php?action=formularioBajaLibros'>Baja de libros</a></p>
-            <p><a href='index.php?action=formularioModificar1'>Modificación de libros</a></p>
-            <p><a href='index.php?action=formularioBuscarLibro'>Buscar libros</a></p></div>";
-    }
-    else {
-
-        switch($_REQUEST["action"]) {
-
-        case "consultarLista":
-            $db = new mysqli("localhost","root","","biblioteca");
+        $db = new mysqli("localhost","root","","biblioteca");
             $consulta = $db->query("SELECT libros.idLibro as idLibro,titulo,genero,pais,anyo,numPaginas,nombre,apellidos
                                     FROM libros
                                     INNER JOIN escriben
@@ -31,11 +18,9 @@
 
             if ($consulta->num_rows > 0) {
 
-                echo "<button class='volverAtras' onclick='location.href=\"index.php\"'>Menú principal</button>";
-
                 echo "<table class='tablaResultados'>
                         <tr>
-                            <th colspan='7'>
+                            <th colspan='8'>
                                 LIBROS GUARDADOS
                             </th>
                         </tr>
@@ -52,14 +37,23 @@
                         <tr style='height: 5px'></tr>";
 
                 while ($fila = $consulta->fetch_object()) {
-                    echo "<tr><td>" . $fila->idLibro . "</td><td>" . $fila->titulo . "</td><td>" . $fila->genero . "</td><td>" . $fila->pais . "</td><td>" . $fila->anyo . "</td><td>" . $fila->numPaginas . "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td></tr>";
+                    echo "<tr><td>" . $fila->idLibro . "</td><td>" . $fila->titulo . "</td><td>" . $fila->genero . 
+                        "</td><td>" . $fila->pais . "</td><td>" . $fila->anyo . "</td><td>" . $fila->numPaginas . 
+                        "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td><td><a class='eliminar' onclick='eliminar($fila->idLibro)'>Eliminar</a></td></tr>";
                 }
 
                 echo "</table>";
             }
             else {
-                echo $db->error;
+                echo "Ha ocurrido un error. Inténtelo de nuevo más tarde.";
             }
+    }
+    else {
+
+        switch($_REQUEST["action"]) {
+
+        case "consultarLista":
+        
             
         break;
 
@@ -167,7 +161,7 @@
                 $consulta1 = $db->query("DELETE FROM escriben
                                         WHERE idLibro = $idLibro");
 
-                header('Location: index.php?action=exito');
+                header('Location: index.php');
             break;
 
             case "formularioModificar1":
@@ -375,5 +369,12 @@
     ?>
 
   </body>
+  <script>
+      function eliminar(idLibro) {
+          if (confirm("¿Estás seguro?")) {
+              location.href = "index.php?action=eliminarLibro&idLibro=" + idLibro;
+          }
+      }
+</script>   
 </html>
 
