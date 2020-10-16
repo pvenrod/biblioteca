@@ -1,6 +1,0 @@
-CREATE TABLE usuarios (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user VARCHAR(50),
-    pass VARCHAR(50));
-
-INSERT INTO usuarios VALUES (DEFAULT, "paolo", "paolo");

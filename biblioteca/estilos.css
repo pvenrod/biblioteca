@@ -19,15 +19,6 @@ body {
     box-shadow: 0px 0px 10px grey;
 }
 
-.menu .tdTexto {
-    text-align: left;
-    padding: 5px;
-}
-
-.menu table {
-    width: 100%;
-}
-
 .menu input[type="text"], .menu input[type="password"] {
     width: 100%;
     outline: none;
@@ -36,6 +27,15 @@ body {
 
 .menu input[type="text"]:focus, .menu input[type="password"]:focus {
     box-shadow: 0px 0px 5px grey;
+}
+
+.menu .tdTexto {
+    text-align: left;
+    padding: 5px;
+}
+
+.menu table {
+    width: 100%;
 }
 
 .guardar {
@@ -147,11 +147,6 @@ h1 {
     font-weight: 700;
     cursor: pointer;
     border-radius: 5px;
-}
-
-.disabled {
-    background-color: grey;
-    cursor: not-allowed;
 }
 
 .divFondoBorrar {
@@ -308,7 +303,7 @@ h1 {
     cursor: pointer;
     position: absolute;
     top: 30px;
-    right: 10px;
+    right: 30px;
     width: 130px;
     border-radius: 5px;
     font-weight: 700;
@@ -331,4 +326,53 @@ h1 {
     top: 15px;
     right: 0px;
     margin-bottom: 10px;
+}
+
+.disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+.formularios {
+    padding: 10px 30px 30px 30px;
+    border-radius: 5px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 30px;
+    width: 550px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 5px grey;
+    text-align: center;
+    width: 300px;
+}
+
+.formularios h1 {
+    color: black;
+}
+
+.formularios input[type="text"], .formularios input[type="password"] {
+    width: 100%;
+    outline: none;
+    border: 1px solid grey;
+}
+
+.formularios input[type="text"]:focus, .formularios input[type="password"]:focus {
+    box-shadow: 0px 0px 5px grey;
+}
+
+.formularios a {
+    color: red;
+}
+.formularios a:visited {
+    color: rgba(107, 0, 80, 0.404);
+}
+
+.formularios .tdTexto {
+    text-align: left;
+    padding: 5px;
+}
+
+.formularios table {
+    width: 100%;
 }
