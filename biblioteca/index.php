@@ -5,18 +5,29 @@
     <link rel="stylesheet" href="estilos.css">
   </head>
   <body>
+
     <?php
+
+        session_start();
 
         $db = new mysqli("localhost","root","","biblioteca");
 
         if (!isset($_REQUEST["action"])) {
 
-            $consulta = $db->query("SELECT libros.idLibro as idLibro,titulo,genero,pais,anyo,numPaginas,nombre,apellidos
+            if (isset($_SESSION["usuario"])) {
+
+                echo "<button class='botonSesion cerrarSesion' onclick='location.href=\"index.php?action=cerrarSesion\"'>Cerrar sesión</button>";
+
+            }
+
+            else {
+
+                echo "<button class='botonSesion iniciarSesion' onclick='location.href=\"index.php?action=formularioIniciarSesion\"'>Iniciar sesión</button>";
+
+            }
+
+            $consulta = $db->query("SELECT libros.idLibro as idLibro,titulo,genero,pais,anyo,numPaginas
                                     FROM libros
-                                    INNER JOIN escriben
-                                        ON libros.idLibro = escriben.idLibro
-                                    INNER JOIN personas
-                                        ON escriben.idPersona = personas.idPersona
                                     ORDER BY libros.idLibro ASC");
 
             if ($consulta->num_rows > 0) {
@@ -30,21 +41,52 @@
                         <tr style='height: 10px'></tr>
                         <tr class='filaArriba'>
                             <td>ID</td>
-                            <td>Título</td>
+                            <td style='width: 30%'>Título</td>
                             <td>Género</td>
                             <td>País</td>
                             <td>Año</td>
                             <td>Páginas</td>
-                            <td>Escritor/a</td>
+                            <td style='width: 30%'>Escritor/a (s)</td>
                             <td colspan='2'>Acciones</td>
                         </tr>
                         <tr style='height: 5px'></tr>";
 
                 while ($fila = $consulta->fetch_object()) {
+
                     echo "<tr><td>" . $fila->idLibro . "</td><td>" . $fila->titulo . "</td><td>" . $fila->genero . 
                         "</td><td>" . $fila->pais . "</td><td>" . $fila->anyo . "</td><td>" . $fila->numPaginas . 
-                        "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td><td><a class='eliminar' onclick='borrar($fila->idLibro, \"$fila->titulo\")'>Eliminar</a></td>\n
-                        <td><a class='modificar' onclick='modificar($fila->idLibro)'>Modificar</a></td></tr>";
+                        "</td><td>";
+
+                    $consulta2 = $db->query("SELECT nombre,apellidos
+                                            FROM personas p 
+                                            INNER JOIN escriben e
+                                                ON p.idPersona = e.idPersona
+                                            WHERE e.idLibro = '$fila->idLibro'");
+
+                    while ($fila2 = $consulta2->fetch_object()) {
+
+                        echo $fila2->nombre . " " . $fila2->apellidos . "<br>";
+
+                    }
+
+                    echo    "</td>";
+
+                    if (isset($_SESSION["usuario"])) {
+
+                        echo "<td><a class='eliminar' onclick='borrar($fila->idLibro, \"$fila->titulo\")'>Eliminar</a></td>\n
+                        <td><a class='modificar' onclick='modificar($fila->idLibro)'>Modificar</a></td>";
+
+                    }
+
+                    else {
+
+                        echo "<td><a class='eliminar disabled'>Eliminar</a></td>\n
+                        <td><a class='modificar disabled'>Modificar</a></td>";
+
+                    }
+                            
+                    echo "</tr>";
+
                 }
 
                 echo "<tr><td colspan='9'><button class='nuevoLibro' onclick='location.href=\"index.php?action=formularioAltaLibros\"'>+ Añadir libro</button></td></tr>";
@@ -85,321 +127,172 @@
 
             switch($_REQUEST["action"]) {
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                // ========================================================== INICIAR SESIÓN (USUARIO) ==========================================================
 
 
-            case "formularioAltaLibros":
+                case "formularioIniciarSesion":
 
-                if (isset($_REQUEST["titulo"])) {
-                    $titulo = $_REQUEST["titulo"];
-                    $genero = $_REQUEST["genero"];
-                    $pais = $_REQUEST["pais"];
-                    $anyo = $_REQUEST["anyo"];
-                    $numPaginas = $_REQUEST["numPaginas"];
-                }
-                else {
-                    $titulo = "";
-                    $genero = "";
-                    $pais = "";
-                    $anyo = "";
-                    $numPaginas = "";
-                }
-                
-                echo "<div class='menu'>
-                        <h1>Formulario de alta de libros</h1>
+                    echo "<div class='menu' style='width: 300px'>
+                            <h1>Formulario de inicio de sesión</h1>
                             <table>
-                                <form action = 'index.php' method = 'get' id='form1'>
+                                <form action = 'index.php' method = 'post'>
                                     <tr>
-                                        <td class='tdTexto'>Título</td>
-                                        <td width='60%'><input type='text' name='titulo' value='$titulo' required></td>
+                                        <td class='tdTexto'>Usuario:</td>
+                                        <td width='60%'><input type='text' name='usuario' required></td>
                                     </tr>
                                     <tr>
-                                        <td class='tdTexto'>Género</td>
-                                        <td><input type='text' name='genero' value='$genero' required></td>
+                                        <td class='tdTexto'>Contraseña:</td>
+                                        <td width='60%'><input type='password' name='contrasenya' required></td>
                                     </tr>
                                     <tr>
-                                        <td class='tdTexto'>País</td>
-                                        <td><input type='text' name='pais' value='$pais' required></td>
+                                        <td colspan='2'><input type='submit' value='Iniciar sesión' class='botonSesion iniciarSesion botonFormulario'></td>
                                     </tr>
-                                    <tr>
-                                        <td class='tdTexto'>Año</td>
-                                        <td><input type='text' name='anyo' value='$anyo' required></td>
-                                    </tr>
-                                    <tr>
-                                        <td class='tdTexto'>Número de páginas</td>
-                                        <td><input type='text' name='numPaginas' value='$numPaginas' required></td>
-                                    </tr>
-                                    <tr>
-                                        <td class='tdTexto' id='tdEscritor'>Escritor/a</td>
-
-
-                                        <td>
-                                            <select name='escritor[]' class='selectAutor' multiple size='4'>";
-                            
-                                                $consulta = $db->query("SELECT * FROM personas");
-
-                                                while ($fila = $consulta->fetch_object()) {
-
-                                                    echo "<option value='$fila->idPersona'>$fila->nombre $fila->apellidos";
-
-                                                }
-                                                
-
-                echo "                      </select>
-                                            <button type='button' id='botonNuevoEscritor' onclick='nuevoEscritor()' class='nuevoEscritor'>Nuevo escritor</button>
-                                        </td>
-                                    </tr>
-                                    <input type='hidden' name='action' value='insertarLibro'>
+                                    <input type='hidden' name='action' value='iniciarSesion'>
                                 </form>
-                                <tr id='trNuevoEscritor' style='visibility: hidden'>
-                                    <td></td>
-                                    <td>
-                                        <form id='form2' method='get' action='index.php'>
-                                            <input class='inputAutor' name='nombre' required placeholder='Nombre'>
-                                            <input class='inputAutor' name='apellidos' required placeholder='Apellidos'>
-                                            <input type='hidden' name='action' value='insertarAutor2'>
-                                            <button type='button' class='nuevoAutor' onclick='document.getElementById(\"form2\").submit()'>+</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr style='height: 20px'></tr>
-                                <tr>
-                                    <td colspan='2'>
-                                        <button class='guardar' onclick='document.getElementById(\"form1\").submit()'>Guardar libro</button>
-                                        <button type='button' onclick='volver()' class='cancelar'>Cancelar</button>    
-                                    </td>
-                                </tr>
                             </table>
-                    </div>";
+                        </div>";
 
-            break;
-
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-            case "insertarLibro":
-
-                $titulo = $_REQUEST["titulo"];
-                $genero = $_REQUEST["genero"];
-                $pais = $_REQUEST["pais"];
-                $anyo = $_REQUEST["anyo"];
-                $numPaginas = $_REQUEST["numPaginas"];
-                $idEscritor = $_REQUEST["escritor"];
-                $idLibro;
-
-                $consulta = $db->query("SELECT max(idLibro) + 1 as 'id'
-                                        FROM libros");
-                while ($fila = $consulta->fetch_object()) {
-                    $idLibro = $fila->id;
-                }
-
-                $consulta1 = $db->query("INSERT INTO libros
-                                        VALUES ('$idLibro','$titulo','$genero','$pais','$anyo','$numPaginas')");
-                $filasAfectadasConsulta1 = $db->affected_rows;
-
-                foreach ($idEscritor as $escritor) {
-                    $consulta2 = $db->query("INSERT INTO escriben
-                                        VALUES ('$idLibro', '$escritor')");
-                }
-
-                
-                $filasAfectadasConsulta2 = $db->affected_rows;
-
-                if ($filasAfectadasConsulta1 > 0 && $filasAfectadasConsulta2) {
-
-                    header('Location: index.php');
-
-                }
-                
-                else {
-
-                    header('Location: index.php?action=error');
-
-                }
-
-            break;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            case "insertarAutor":
-
-                $nombre = $_REQUEST["nombre"];
-                $apellidos = $_REQUEST["apellidos"];
-                $idLibro = $_REQUEST["idLibro"];
-                $idPersona;
-
-                $consulta = $db->query("SELECT max(idPersona) + 1 as 'id'
-                                        FROM personas");
-                while ($fila = $consulta->fetch_object()) {
-                    $idPersona = $fila->id;
-                }
-
-                $consulta = $db->query("INSERT INTO personas
-                                        VALUES ('$idPersona','$nombre','$apellidos')");
-
-                if ($db->affected_rows > 0) {
-
-                    if (isset($_REQUEST["modificando"])) {
-
-                        header('Location: index.php?action=formularioModificar2&idLibro=' . $idLibro);
-
-                    }
-                    
-                    else {
-
-                        header('Location: index.php?action=formularioAltaLibros');
-
-                    }
-
-                   
-
-                }
-                
-                else {
-
-                    header('Location: index.php?action=error');
-
-                }
-
-            break;
-
-
-            case "insertarAutor2":
-
-                $nombre = $_REQUEST["nombre"];
-                $apellidos = $_REQUEST["apellidos"];
-                $idPersona;
-
-                $consulta = $db->query("SELECT max(idPersona) + 1 as 'id'
-                                        FROM personas");
-                while ($fila = $consulta->fetch_object()) {
-                    $idPersona = $fila->id;
-                }
-
-                $consulta = $db->query("INSERT INTO personas
-                                        VALUES ('$idPersona','$nombre','$apellidos')");
-
-                if ($db->affected_rows > 0) {
-
-                    header('Location: index.php?action=formularioAltaLibros');
-
-                }
-                
-                else {
-
-                    header('Location: index.php?action=error');
-
-                }
-
-            break;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                
-
-            case "eliminarLibro":
-
-                $idLibro = $_REQUEST["idLibro"];
-
-                $consulta0 = $db->query("DELETE FROM libros
-                                        WHERE idLibro = $idLibro");
-                
-                $consulta1 = $db->query("DELETE FROM escriben
-                                        WHERE idLibro = $idLibro");
-
-                header('Location: index.php');
-
-            break;
-
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-            case "formularioModificar2":
-
-                $idLibro = $_REQUEST["idLibro"];
-
-                $consulta0 = $db->query("SELECT titulo, genero, pais, anyo, numPaginas
-                                        FROM libros
-                                        INNER JOIN escriben
-                                            ON libros.idLibro = escriben.idLibro
-                                        WHERE libros.idLibro = $idLibro");
-                $fila = $consulta0->fetch_object();
-                    echo "<div class='menu'>
-                        <h1>Formulario de modificación</h1>
-                            <table>
-                                <form id='form1' action = 'index.php' method = 'get'>
-                                <tr>
-                                    <td class='tdTexto'>Título</td>
-                                    <td width='60%'><input type='text' name='titulo' value='$fila->titulo'></td>
-                                </tr>
-                                <tr>
-                                    <td class='tdTexto'>Género</td>
-                                    <td><input type='text' name='genero' value='$fila->genero'></td>
-                                </tr>
-                                <tr>
-                                    <td class='tdTexto'>País</td>
-                                    <td><input type='text' name='pais' value='$fila->pais'></td>
-                                </tr>
-                                <tr>
-                                    <td class='tdTexto'>Año</td>
-                                    <td><input type='text' name='anyo' value='$fila->anyo'></td>
-                                </tr>
-                                <tr>
-                                    <td class='tdTexto'>Número de páginas</td>
-                                    <td><input type='text' name='numPaginas' value='$fila->numPaginas'></td>
-                                </tr>
-                                <tr>
-                                    <td class='tdTexto' id='tdEscritor'>Escritor/a</td>
-                                    <td>
-                                            <select name='escritor[]' class='selectAutor' multiple size='4'>";
-                            
-                                                $consulta = $db->query("SELECT * FROM personas");
-
-                                                while ($fila = $consulta->fetch_object()) {
-
-                                                    echo "<option value='$fila->idPersona'>$fila->nombre $fila->apellidos";
-
-                                                }
-                                                
-
-                echo "                      </select>
-                                            <button type='button' id='botonNuevoEscritor' onclick='nuevoEscritor()' class='nuevoEscritor'>Nuevo escritor</button>
-                                        </td>
-                                    </tr>
-                                    <input type='hidden' name='action' value='modificarLibro'>
-                                    <input type='hidden' name='idLibro' value='$idLibro'>
-                                </form>
-                                <tr id='trNuevoEscritor' style='visibility: hidden'>
-                                    <td></td>
-                                    <td>
-                                        <form id='form2' method='get' action='index.php'>
-                                            <input class='inputAutor' name='nombre' required placeholder='Nombre'>
-                                            <input class='inputAutor' name='apellidos' required placeholder='Apellidos'>
-                                            <input type='hidden' name='action' value='insertarAutor'>
-                                            <input type='hidden' name='idLibro' value='$idLibro'>
-                                            <input type='hidden' name='modificando' value='si'>
-                                            <button type='button' class='nuevoAutor' onclick='document.getElementById(\"form2\").submit()'>+</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr style='height: 20px'></tr>
-                                <tr>
-                                    <td colspan='2'>
-                                        <button class='guardar' onclick='document.getElementById(\"form1\").submit()'>Guardar libro</button>
-                                        <button type='button' onclick='volver()' class='cancelar'>Cancelar</button>    
-                                    </td>
-                                </tr>
-                            </table>
-                    </div>";
-                
-                
                 break;
 
 
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // ========================================================== INICIAR SESIÓN (MÁQUINA) ==========================================================
 
-                case "modificarLibro":
+
+                case "iniciarSesion":
+
+                    $usuario = $_REQUEST["usuario"];
+                    $contrasenya = $_REQUEST["contrasenya"];
+
+                    $consulta = $db->query("SELECT id
+                                            FROM usuarios
+                                            WHERE usuario = '$usuario'
+                                            AND BINARY contrasenya = '$contrasenya'");
+                    
+                    if ($consulta->num_rows > 0) {
+
+                        session_start();
+                        $_SESSION["usuario"] = $usuario;
+                        
+                        header('Location: index.php');
+
+                    }
+
+                    else {
+
+                        header('Location: index.php?action=formularioIniciarSesion');
+
+                    }
+
+                break;
+
+
+                // ========================================================== CERRAR SESIÓN (MÁQUINA) ==========================================================
+
+
+                case "cerrarSesion":
+
+                    session_destroy();
+                    
+                    header('Location: index.php');
+
+                break;
+
+
+                // ========================================================== DAR DE ALTA LIBROS (USUARIO) ==========================================================
+
+
+                case "formularioAltaLibros":
+
+                    if (isset($_REQUEST["titulo"])) {
+                        $titulo = $_REQUEST["titulo"];
+                        $genero = $_REQUEST["genero"];
+                        $pais = $_REQUEST["pais"];
+                        $anyo = $_REQUEST["anyo"];
+                        $numPaginas = $_REQUEST["numPaginas"];
+                    }
+                    else {
+                        $titulo = "";
+                        $genero = "";
+                        $pais = "";
+                        $anyo = "";
+                        $numPaginas = "";
+                    }
+                    
+                    echo "<div class='menu'>
+                            <h1>Formulario de alta de libros</h1>
+                                <table>
+                                    <form action = 'index.php' method = 'get' id='form1'>
+                                        <tr>
+                                            <td class='tdTexto'>Título</td>
+                                            <td width='60%'><input type='text' name='titulo' value='$titulo' required></td>
+                                        </tr>
+                                        <tr>
+                                            <td class='tdTexto'>Género</td>
+                                            <td><input type='text' name='genero' value='$genero' required></td>
+                                        </tr>
+                                        <tr>
+                                            <td class='tdTexto'>País</td>
+                                            <td><input type='text' name='pais' value='$pais' required></td>
+                                        </tr>
+                                        <tr>
+                                            <td class='tdTexto'>Año</td>
+                                            <td><input type='text' name='anyo' value='$anyo' required></td>
+                                        </tr>
+                                        <tr>
+                                            <td class='tdTexto'>Número de páginas</td>
+                                            <td><input type='text' name='numPaginas' value='$numPaginas' required></td>
+                                        </tr>
+                                        <tr>
+                                            <td class='tdTexto' id='tdEscritor'>Escritor/a</td>
+
+
+                                            <td>
+                                                <select name='escritor[]' class='selectAutor' multiple size='4'>";
+                                
+                                                    $consulta = $db->query("SELECT * FROM personas");
+
+                                                    while ($fila = $consulta->fetch_object()) {
+
+                                                        echo "<option value='$fila->idPersona'>$fila->nombre $fila->apellidos</option>";
+
+                                                    }
+                                                    
+
+                    echo "                      </select>
+                                                <button type='button' id='botonNuevoEscritor' onclick='nuevoEscritor()' class='nuevoEscritor'>Nuevo escritor</button>
+                                            </td>
+                                        </tr>
+                                        <input type='hidden' name='action' value='insertarLibro'>
+                                    </form>
+                                    <tr id='trNuevoEscritor' style='visibility: hidden'>
+                                        <td></td>
+                                        <td>
+                                            <form id='form2' method='get' action='index.php'>
+                                                <input class='inputAutor' name='nombre' required placeholder='Nombre'>
+                                                <input class='inputAutor' name='apellidos' required placeholder='Apellidos'>
+                                                <input type='hidden' name='action' value='insertarAutor'>
+                                                <button type='button' class='nuevoAutor' onclick='document.getElementById(\"form2\").submit()'>+</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr style='height: 20px'></tr>
+                                    <tr>
+                                        <td colspan='2'>
+                                            <button class='guardar' onclick='document.getElementById(\"form1\").submit()'>Guardar libro</button>
+                                            <button type='button' onclick='volver()' class='cancelar'>Cancelar</button>    
+                                        </td>
+                                    </tr>
+                                </table>
+                        </div>";
+
+                break;
+
+
+                // ========================================================== DAR DE ALTA LIBROS (MAQUINA) ==========================================================
+
+
+                case "insertarLibro":
 
                     $titulo = $_REQUEST["titulo"];
                     $genero = $_REQUEST["genero"];
@@ -407,111 +300,337 @@
                     $anyo = $_REQUEST["anyo"];
                     $numPaginas = $_REQUEST["numPaginas"];
                     $idEscritor = $_REQUEST["escritor"];
-                    $idLibro = $_REQUEST["idLibro"];
-        
-                    $consulta1 = $db->query("UPDATE libros
-                                            SET 
-                                                titulo = '$titulo',
-                                                genero = '$genero',
-                                                pais = '$pais',
-                                                anyo = '$anyo',
-                                                numPaginas = '$numPaginas'
-                                            WHERE idLibro = $idLibro");
-                                            
+                    $idLibro;
+
+                    $consulta = $db->query("SELECT max(idLibro) + 1 as 'id'
+                                            FROM libros");
+                    while ($fila = $consulta->fetch_object()) {
+                        $idLibro = $fila->id;
+                    }
+
+                    $consulta1 = $db->query("INSERT INTO libros
+                                            VALUES ('$idLibro','$titulo','$genero','$pais','$anyo','$numPaginas')");
+                    $filasAfectadasConsulta1 = $db->affected_rows;
+
                     foreach ($idEscritor as $escritor) {
                         $consulta2 = $db->query("INSERT INTO escriben
-                                                VALUES ('$idLibro', '$escritor')");
+                                            VALUES ('$idLibro', '$escritor')");
                     }
-        
-                    header('Location: index.php');
-        
+
+                    
+                    $filasAfectadasConsulta2 = $db->affected_rows;
+
+                    if ($filasAfectadasConsulta1 > 0 && $filasAfectadasConsulta2) {
+
+                        header('Location: index.php');
+
+                    }
+                    
+                    else {
+
+                        header('Location: index.php?action=error');
+
+                    }
+
                 break;
 
-                case "buscarLibros":
-                    $titulo = $_REQUEST["titulo"];
 
-                    $consulta = $db->query("SELECT libros.idLibro as idLibro,titulo,genero,pais,anyo,numPaginas,nombre,apellidos
+                // ========================================================== DAR DE ALTA AUTORES (MAQUINA) ==========================================================
+
+                
+                case "insertarAutor":
+
+                    $nombre = $_REQUEST["nombre"];
+                    $apellidos = $_REQUEST["apellidos"];
+                    $idLibro = $_REQUEST["idLibro"];
+                    $idPersona;
+
+                    $consulta = $db->query("SELECT max(idPersona) + 1 as 'id'
+                                            FROM personas");
+                    while ($fila = $consulta->fetch_object()) {
+                        $idPersona = $fila->id;
+                    }
+
+                    $consulta = $db->query("INSERT INTO personas
+                                            VALUES ('$idPersona','$nombre','$apellidos')");
+
+                    if ($db->affected_rows > 0) {
+
+                        if (isset($_REQUEST["modificando"])) {
+
+                            header('Location: index.php?action=formularioModificar&idLibro=' . $idLibro);
+
+                        }
+                        
+                        else {
+
+                            header('Location: index.php?action=formularioAltaLibros');
+
+                        }
+
+                    
+
+                    }
+                    
+                    else {
+
+                        header('Location: index.php?action=error');
+
+                    }
+
+                break;
+
+
+                // ========================================================== ELIMINAR LIBROS (MAQUINA) ==========================================================
+                    
+
+                case "eliminarLibro":
+
+                    $idLibro = $_REQUEST["idLibro"];
+
+                    $consulta0 = $db->query("DELETE FROM libros
+                                            WHERE idLibro = $idLibro");
+                    
+                    $consulta1 = $db->query("DELETE FROM escriben
+                                            WHERE idLibro = $idLibro");
+
+                    header('Location: index.php');
+
+                break;
+
+
+                // ========================================================== MODIFICAR LIBROS (USUARIO) ==========================================================
+
+
+                case "formularioModificar":
+
+                    $idLibro = $_REQUEST["idLibro"];
+
+                    $consulta0 = $db->query("SELECT titulo, genero, pais, anyo, numPaginas
                                             FROM libros
                                             INNER JOIN escriben
                                                 ON libros.idLibro = escriben.idLibro
-                                            INNER JOIN personas
-                                                ON escriben.idPersona = personas.idPersona
-                                            WHERE titulo LIKE '%$titulo%'
-                                            OR genero LIKE '%$titulo%'
-                                            OR personas.nombre LIKE '%$titulo%'
-                                            OR personas.apellidos LIKE '%$titulo%'
-                                            ORDER BY libros.idLibro ASC");
-        
-                    if ($consulta->num_rows > 0) {
+                                            WHERE libros.idLibro = $idLibro");
+                    $fila = $consulta0->fetch_object();
+                        echo "<div class='menu'>
+                            <h1>Formulario de modificación</h1>
+                                <table>
+                                    <form id='form1' action = 'index.php' method = 'get'>
+                                    <tr>
+                                        <td class='tdTexto'>Título</td>
+                                        <td width='60%'><input type='text' name='titulo' value='$fila->titulo'></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='tdTexto'>Género</td>
+                                        <td><input type='text' name='genero' value='$fila->genero'></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='tdTexto'>País</td>
+                                        <td><input type='text' name='pais' value='$fila->pais'></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='tdTexto'>Año</td>
+                                        <td><input type='text' name='anyo' value='$fila->anyo'></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='tdTexto'>Número de páginas</td>
+                                        <td><input type='text' name='numPaginas' value='$fila->numPaginas'></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='tdTexto' id='tdEscritor'>Escritor/a</td>
+                                        <td>
+                                                <select name='escritor[]' class='selectAutor' multiple size='4'>";
+                                
+                                                    $consulta = $db->query("SELECT * FROM personas");
 
-                        echo "<table class='tablaResultados' id='tablaResultados'>
-                                <tr>
-                                    <th colspan='9'>
-                                        LIBROS GUARDADOS
-                                    </th>
-                                </tr>
-                                <tr style='height: 10px'></tr>
-                                <tr class='filaArriba'>
-                                    <td>ID</td>
-                                    <td>Título</td>
-                                    <td>Género</td>
-                                    <td>País</td>
-                                    <td>Año</td>
-                                    <td>Páginas</td>
-                                    <td>Escritor/a</td>
-                                    <td colspan='2'>Acciones</td>
-                                </tr>
-                                <tr style='height: 5px'></tr>";
+                                                    $consulta2 = $db->query("SELECT idPersona
+                                                                            FROM escriben
+                                                                            WHERE idLibro = '$idLibro'");
 
-                        while ($fila = $consulta->fetch_object()) {
-                            echo "<tr><td>" . $fila->idLibro . "</td><td>" . $fila->titulo . "</td><td>" . $fila->genero . 
-                                "</td><td>" . $fila->pais . "</td><td>" . $fila->anyo . "</td><td>" . $fila->numPaginas . 
-                                "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td><td><a class='eliminar' onclick='borrar($fila->idLibro, \"$fila->titulo\")'>Eliminar</a></td>\n
-                                <td><a class='modificar' onclick='modificar($fila->idLibro)'>Modificar</a></td></tr>";
+                                                    $autoresLibro = array();
+
+                                                    while ($fila = $consulta2->fetch_object()) {
+
+                                                        $autoresLibro[] = $fila->idPersona;
+
+                                                    }
+
+                                                    while ($fila = $consulta->fetch_object()) {
+
+                                                        if (in_array($fila->idPersona, $autoresLibro)) {
+
+                                                            echo "<option selected value='$fila->idPersona'>$fila->nombre $fila->apellidos";
+
+                                                        }
+
+                                                        else {
+
+                                                            echo "<option value='$fila->idPersona'>$fila->nombre $fila->apellidos";
+
+                                                        }
+
+                                                    }
+                                                    
+
+                    echo "                      </select>
+                                                <button type='button' id='botonNuevoEscritor' onclick='nuevoEscritor()' class='nuevoEscritor'>Nuevo escritor</button>
+                                            </td>
+                                        </tr>
+                                        <input type='hidden' name='action' value='modificarLibro'>
+                                        <input type='hidden' name='idLibro' value='$idLibro'>
+                                    </form>
+                                    <tr id='trNuevoEscritor' style='visibility: hidden'>
+                                        <td></td>
+                                        <td>
+                                            <form id='form2' method='get' action='index.php'>
+                                                <input class='inputAutor' name='nombre' required placeholder='Nombre'>
+                                                <input class='inputAutor' name='apellidos' required placeholder='Apellidos'>
+                                                <input type='hidden' name='action' value='insertarAutor'>
+                                                <input type='hidden' name='idLibro' value='$idLibro'>
+                                                <input type='hidden' name='modificando' value='si'>
+                                                <button type='button' class='nuevoAutor' onclick='document.getElementById(\"form2\").submit()'>+</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr style='height: 20px'></tr>
+                                    <tr>
+                                        <td colspan='2'>
+                                            <button class='guardar' onclick='document.getElementById(\"form1\").submit()'>Guardar libro</button>
+                                            <button type='button' onclick='volver()' class='cancelar'>Cancelar</button>    
+                                        </td>
+                                    </tr>
+                                </table>
+                        </div>";
+                    
+                    
+                    break;
+
+
+                    // ========================================================== MODIFICAR LIBROS (MÁQUINA) ==========================================================
+
+
+                    case "modificarLibro":
+
+                        $titulo = $_REQUEST["titulo"];
+                        $genero = $_REQUEST["genero"];
+                        $pais = $_REQUEST["pais"];
+                        $anyo = $_REQUEST["anyo"];
+                        $numPaginas = $_REQUEST["numPaginas"];
+                        $idEscritor = $_REQUEST["escritor"];
+                        $idLibro = $_REQUEST["idLibro"];
+            
+                        $consulta1 = $db->query("UPDATE libros
+                                                SET 
+                                                    titulo = '$titulo',
+                                                    genero = '$genero',
+                                                    pais = '$pais',
+                                                    anyo = '$anyo',
+                                                    numPaginas = '$numPaginas'
+                                                WHERE idLibro = $idLibro");
+                                                
+                        $consulta2 = $db->query("DELETE FROM escriben
+                                                WHERE idLibro = '$idLibro'");
+
+                        foreach ($idEscritor as $escritor) {
+                            $consulta3 = $db->query("INSERT INTO escriben
+                                                    VALUES ('$idLibro', '$escritor')");
+                        }
+            
+                        header('Location: index.php');
+            
+                    break;
+
+                    case "buscarLibros":
+                        $titulo = $_REQUEST["titulo"];
+
+                        $consulta = $db->query("SELECT libros.idLibro as idLibro,titulo,genero,pais,anyo,numPaginas,nombre,apellidos
+                                                FROM libros
+                                                INNER JOIN escriben
+                                                    ON libros.idLibro = escriben.idLibro
+                                                INNER JOIN personas
+                                                    ON escriben.idPersona = personas.idPersona
+                                                WHERE titulo LIKE '%$titulo%'
+                                                OR genero LIKE '%$titulo%'
+                                                OR personas.nombre LIKE '%$titulo%'
+                                                OR personas.apellidos LIKE '%$titulo%'
+                                                ORDER BY libros.idLibro ASC");
+            
+                        if ($consulta->num_rows > 0) {
+
+                            echo "<table class='tablaResultados' id='tablaResultados'>
+                                    <tr>
+                                        <th colspan='9'>
+                                            LIBROS GUARDADOS
+                                        </th>
+                                    </tr>
+                                    <tr style='height: 10px'></tr>
+                                    <tr class='filaArriba'>
+                                        <td>ID</td>
+                                        <td>Título</td>
+                                        <td>Género</td>
+                                        <td>País</td>
+                                        <td>Año</td>
+                                        <td>Páginas</td>
+                                        <td>Escritor/a</td>
+                                        <td colspan='2'>Acciones</td>
+                                    </tr>
+                                    <tr style='height: 5px'></tr>";
+
+                            while ($fila = $consulta->fetch_object()) {
+                                echo "<tr><td>" . $fila->idLibro . "</td><td>" . $fila->titulo . "</td><td>" . $fila->genero . 
+                                    "</td><td>" . $fila->pais . "</td><td>" . $fila->anyo . "</td><td>" . $fila->numPaginas . 
+                                    "</td><td>" . $fila->nombre . " " . $fila->apellidos . "</td><td><a class='eliminar' onclick='borrar($fila->idLibro, \"$fila->titulo\")'>Eliminar</a></td>\n
+                                    <td><a class='modificar' onclick='modificar($fila->idLibro)'>Modificar</a></td></tr>";
+                            }
+
+                            echo "<tr><td colspan='9'><button class='nuevoLibro' onclick='location.href=\"index.php?action=formularioAltaLibros\"'>+ Añadir libro</button></td></tr>";
+                            echo "<tr><td colspan='9'>
+                                    <form action = 'index.php' method = 'get'>
+                                        <input class='inputBuscar' type='text' name='titulo' placeholder='Título...'>
+                                        <input type='hidden' name='action' value='buscarLibros'>
+                                        <input class='submitBuscar'type='submit' value='Buscar libro(s)'>  
+                                    </form>
+                                </td></tr>";
+                            echo "</table>";
+
                         }
 
-                        echo "<tr><td colspan='9'><button class='nuevoLibro' onclick='location.href=\"index.php?action=formularioAltaLibros\"'>+ Añadir libro</button></td></tr>";
-                        echo "<tr><td colspan='9'>
-                                <form action = 'index.php' method = 'get'>
-                                    <input class='inputBuscar' type='text' name='titulo' placeholder='Título...'>
-                                    <input type='hidden' name='action' value='buscarLibros'>
-                                    <input class='submitBuscar'type='submit' value='Buscar libro(s)'>  
-                                </form>
-                            </td></tr>";
-                        echo "</table>";
+                        else {
 
-                    }
+                            echo "<table class='tablaResultados' id='tablaResultados'>
+                                    <tr>
+                                        <th colspan='9'>
+                                            LIBROS GUARDADOS
+                                        </th>
+                                    </tr>
+                                    <tr style='height: 10px'></tr>
+                                    <tr>
+                                        <td colspan='9'>
+                                            No existen coincidencias en la base de datos.
+                                        </td>
+                                    </tr>";
 
-                    else {
+                            echo "<tr><td colspan='9'><button class='nuevoLibro' onclick='location.href=\"index.php?action=formularioAltaLibros\"'>+ Añadir libro</button></td></tr>";
+                            echo "</table>";
 
-                        echo "<table class='tablaResultados' id='tablaResultados'>
-                                <tr>
-                                    <th colspan='9'>
-                                        LIBROS GUARDADOS
-                                    </th>
-                                </tr>
-                                <tr style='height: 10px'></tr>
-                                <tr>
-                                    <td colspan='9'>
-                                        No existen coincidencias en la base de datos.
-                                    </td>
-                                </tr>";
+                        }
 
-                        echo "<tr><td colspan='9'><button class='nuevoLibro' onclick='location.href=\"index.php?action=formularioAltaLibros\"'>+ Añadir libro</button></td></tr>";
-                        echo "</table>";
-
-                    }
                 break;
-            
-            case "error":
-                echo "<div class='exito'>
-                        Ha ocurrido un error. Inténtalo de nuevo más tarde.   
-                     </div>";
-            break;
 
 
-            default: echo "Error 404: página no encontrada";
+                // ========================================================== ERRORES ==========================================================
+
+                
+                case "error":
+                    echo "<div class='exito'>
+                            Ha ocurrido un error. Inténtalo de nuevo más tarde.   
+                        </div>";
                 break;
+
+
+                default: echo "Error 404: página no encontrada";
+                break;
+
             } // switch
 
             
@@ -599,7 +718,7 @@
 
         function modificar(idLibro) {
 
-            location.href = "index.php?action=formularioModificar2&idLibro=" + idLibro;
+            location.href = "index.php?action=formularioModificar&idLibro=" + idLibro;
 
         }
 
