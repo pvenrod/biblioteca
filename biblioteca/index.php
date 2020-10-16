@@ -134,7 +134,7 @@
 
 
                                         <td>
-                                            <select name='escritor' class='selectAutor'>";
+                                            <select name='escritor[]' class='selectAutor' multiple size='4'>";
                             
                                                 $consulta = $db->query("SELECT * FROM personas");
 
@@ -198,8 +198,12 @@
                                         VALUES ('$idLibro','$titulo','$genero','$pais','$anyo','$numPaginas')");
                 $filasAfectadasConsulta1 = $db->affected_rows;
 
-                $consulta2 = $db->query("INSERT INTO escriben
-                                        VALUES ('$idLibro', '$idEscritor')");
+                foreach ($idEscritor as $escritor) {
+                    $consulta2 = $db->query("INSERT INTO escriben
+                                        VALUES ('$idLibro', '$escritor')");
+                }
+
+                
                 $filasAfectadasConsulta2 = $db->affected_rows;
 
                 if ($filasAfectadasConsulta1 > 0 && $filasAfectadasConsulta2) {
@@ -244,7 +248,7 @@
                     
                     else {
 
-                        header('Location: index.php?action=formularioAltaLibro');
+                        header('Location: index.php?action=formularioAltaLibros');
 
                     }
 
@@ -260,6 +264,35 @@
 
             break;
 
+
+            case "insertarAutor2":
+
+                $nombre = $_REQUEST["nombre"];
+                $apellidos = $_REQUEST["apellidos"];
+                $idPersona;
+
+                $consulta = $db->query("SELECT max(idPersona) + 1 as 'id'
+                                        FROM personas");
+                while ($fila = $consulta->fetch_object()) {
+                    $idPersona = $fila->id;
+                }
+
+                $consulta = $db->query("INSERT INTO personas
+                                        VALUES ('$idPersona','$nombre','$apellidos')");
+
+                if ($db->affected_rows > 0) {
+
+                    header('Location: index.php?action=formularioAltaLibros');
+
+                }
+                
+                else {
+
+                    header('Location: index.php?action=error');
+
+                }
+
+            break;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 
@@ -286,12 +319,12 @@
 
                 $idLibro = $_REQUEST["idLibro"];
 
-                $consulta0 = $db->query("SELECT idPersona, titulo, genero, pais, anyo, numPaginas
+                $consulta0 = $db->query("SELECT titulo, genero, pais, anyo, numPaginas
                                         FROM libros
                                         INNER JOIN escriben
                                             ON libros.idLibro = escriben.idLibro
                                         WHERE libros.idLibro = $idLibro");
-                while ($fila = $consulta0->fetch_object()) {
+                $fila = $consulta0->fetch_object();
                     echo "<div class='menu'>
                         <h1>Formulario de modificación</h1>
                             <table>
@@ -319,7 +352,7 @@
                                 <tr>
                                     <td class='tdTexto' id='tdEscritor'>Escritor/a</td>
                                     <td>
-                                            <select name='escritor' class='selectAutor'>";
+                                            <select name='escritor[]' class='selectAutor' multiple size='4'>";
                             
                                                 $consulta = $db->query("SELECT * FROM personas");
 
@@ -359,7 +392,7 @@
                                 </tr>
                             </table>
                     </div>";
-                }
+                
                 
                 break;
 
@@ -384,37 +417,14 @@
                                                 anyo = '$anyo',
                                                 numPaginas = '$numPaginas'
                                             WHERE idLibro = $idLibro");
-                    
-                    $consulta2 = $db->query("UPDATE escriben
-                                            SET idPersona = '$idEscritor'
-                                            WHERE idLibro = $idLibro");
+                                            
+                    foreach ($idEscritor as $escritor) {
+                        $consulta2 = $db->query("INSERT INTO escriben
+                                                VALUES ('$idLibro', '$escritor')");
+                    }
         
                     header('Location: index.php');
         
-                break;
-
-            case "formularioBuscarLibro":
-
-                echo "<button class='volverAtras' onclick='location.href=\"index.php\"'>Menú principal</button>";
-                    
-                echo "<div class='menu'>
-                        <h1>Formulario de búsqueda</h1>
-                        <form action = 'index.php' method = 'get'>
-                            <table>
-                                <tr>
-                                    <td width='50%'>Título (o parte del título) del libro</td>
-                                    <td><input type='text' name='titulo'></td>
-                                </tr>
-                                <tr style='height: 20px'></tr>
-                                <tr>
-                                    <td colspan='2'>
-                                        <input type='submit' value='Buscar libro(s)'>    
-                                    </td>
-                                </tr>
-                            </table>
-                            <input type='hidden' name='action' value='buscarLibros'>
-                        </form>
-                    </div>";
                 break;
 
                 case "buscarLibros":
@@ -427,6 +437,9 @@
                                             INNER JOIN personas
                                                 ON escriben.idPersona = personas.idPersona
                                             WHERE titulo LIKE '%$titulo%'
+                                            OR genero LIKE '%$titulo%'
+                                            OR personas.nombre LIKE '%$titulo%'
+                                            OR personas.apellidos LIKE '%$titulo%'
                                             ORDER BY libros.idLibro ASC");
         
                     if ($consulta->num_rows > 0) {

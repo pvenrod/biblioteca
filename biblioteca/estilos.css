@@ -165,6 +165,7 @@ h1 {
     transition: 0.2s;
     opacity: 1;
     text-align: center;
+    top: 50px;
 }
 
 .spanBorrarAlerta {
