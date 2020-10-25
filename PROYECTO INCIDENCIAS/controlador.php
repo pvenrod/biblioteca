@@ -21,13 +21,72 @@
 
         public function mostrarFormularioIniciarSesion() {
 
-            $this->vista->mostrar("usuario/formularioIniciarSesion");
+            if (isset($_SESSION["usuario"])) {
+
+                $this->vista->mostrar("incidencias/mostrarListaIncidencias");
+
+            } else {
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion");
+
+            }
+
+            
 
         }
 
         public function mostrarFormularioRegistrarse() {
 
-            $this->vista->mostrar("usuario/formularioRegistrarse");
+            if (isset($_SESSION["usuario"])) {
+
+                $this->vista->mostrar("incidencias/mostrarListaIncidencias");
+
+            } else {
+
+                $this->vista->mostrar("usuario/formularioRegistrarse");
+
+            }
+
+        }
+
+        public function procesarLogin() {
+
+            $usuario = $_REQUEST["usuario"];
+            $contrasenya = $_REQUEST["contrasenya"];
+
+            if ($this->usuario->buscarUsuario($usuario, $contrasenya)) {
+
+                //mostrarListaIncidencias();
+
+            } else  {
+
+                $data["msjError"] = "Usuario y/o contraseña incorrectos.";
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
+
+            }
+
+        }
+
+        public function procesarRegistro() {
+
+            $usuario = $_REQUEST["usuario"];
+            $email = $_REQUEST["email"];
+            $contrasenya1 = $_REQUEST["contrasenya1"];
+            $contrasenya2 = $_REQUEST["contrasenya2"];
+
+            if ($this->usuario->insert($usuario, $email, $contrasenya1, $contrasenya2)) {
+
+                $this->usuario->buscarUsuario($usuario, $contrasenya1);
+                //mostrarListaIncidencias();
+
+            } else  {
+
+                $data["msjError"] = "Introduce los datos correctamente.";
+
+                $this->vista->mostrar("usuario/formularioRegistrarse", $data);
+
+            }
 
         }
 

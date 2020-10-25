@@ -24,11 +24,12 @@
         public function buscarUsuario($usuario,$contrasenya) {
 
             $devolver = false;
-
-            if ($result = $this->db->query("SELECT id, usuario, foto
+            $result = $this->db->query("SELECT id, usuario, foto
                                             FROM usuarios
-                                            WHERE usuario = '$user' AND
-                                            BINARY contrasenya = '$contrasenya'")->num_rows == 1) {
+                                            WHERE usuario = '$usuario' AND
+                                            BINARY contrasenya = '$contrasenya'");
+
+            if ($result->num_rows == 1) {
 
                 $usuario = $result->fetch_object();
 
@@ -102,25 +103,26 @@
          * @param contrasenya2 La confirmación de la contraseña.
          * @return 1 en caso de éxito, y 0 en caso de error.
          */
-        public function insert($usuario, $email, $contrasenya, $contrasenya2) {
+        public function insert($usuario, $email, $contrasenya1, $contrasenya2) {
 
             $devolver = 0;
 
             $id = $this->db->query("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                    FROM usuarios")->fetch_object->id; // Saco el nuevo id para el usuario
+                                    FROM usuarios")->fetch_object()->id; // Saco el nuevo id para el usuario
             $usuario;
             $email;
-            $contrasenya;
+            $contrasenya1;
             $contrasenya2;
-            $rol = "estandar";
+            $foto = "img/imagen.png";
+            $rol = "desactivado";
 
-            if ($contrasenya == $contrasenya2) {
+            if ($contrasenya1 == $contrasenya2) {
 
                 $result = $this->db->query("INSERT INTO usuarios
                                             VALUES
-                                                ('$id', '$usuario', '$email', '$contrasenya', '$rol'");
+                                                ('$id', '$usuario', '$email', '$contrasenya1', '$foto', '$rol')");
                   
-                $devolver = $result->affected_rows;
+                $devolver = $this->db->affected_rows;
 
             }
 
