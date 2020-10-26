@@ -90,4 +90,37 @@
 
         }
 
+        public function mostrarListaIncidencias() {
+
+            if (isset($_SESSION["usuario"])) {
+
+                if ($_SESSION["rol"] == "admin") {
+
+                    $data["listaIncidencias"] = $this->incidencia->getAll();
+
+                } else if ($_SESSION["rol"] == "estandar") {
+
+                    $data["listaIncidencias"] = $this->incidencia->getAllEstandar();
+
+                } else if ($_SESSION["rol"] == "deshabilitado") {
+
+                    $data["msjError"] = "Tu usuario aún no está habilitado. Inténtalo más tarde.";
+
+                    $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
+
+                }
+
+                $this->vista->mostrar("incidencia/listaIncidencias",$data);
+
+            } else  {
+
+                $data["msjError"] = "Necesitas estar logueado para hacer eso.";
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
+
+            }
+
+
+        }
+
     }
