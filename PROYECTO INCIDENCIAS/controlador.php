@@ -15,7 +15,7 @@
 
             $this->vista = new Vista();
             $this->usuario = new Usuario();
-            //$this->incidencia = new Incidencia();
+            $this->incidencia = new Incidencia();
 
         }
 
@@ -56,7 +56,7 @@
 
             if ($this->usuario->buscarUsuario($usuario, $contrasenya)) {
 
-                //mostrarListaIncidencias();
+                $this->mostrarListaIncidencias();
 
             } else  {
 
@@ -91,6 +91,8 @@
         }
 
         public function mostrarListaIncidencias() {
+
+            $data = array();
 
             if (isset($_SESSION["usuario"])) {
 

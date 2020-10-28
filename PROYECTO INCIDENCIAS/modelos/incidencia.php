@@ -43,6 +43,33 @@
         public function getAll() {
 
             $devolver = null;
+            $result = $this->db->query("SELECT *
+                                            FROM incidencias");
+
+            if ($result->num_rows == 1) {
+
+                $devolver = array();
+
+                while($fila = $result->fetch_object()) {
+
+                    $devolver[] = $fila;
+
+                }
+
+            }
+
+            return $devolver;
+
+        }
+
+
+        /**
+         * Función que devuelve todas las incidencias.
+         * @return Un objeto con todos los datos de todas las incidencias extraídos de la BD, o null en caso de error.
+         */
+        public function getAllEstandar() {
+
+            $devolver = null;
 
             if ($result = $this->db->query("SELECT *
                                             FROM incidencias")->num_rows == 1) {

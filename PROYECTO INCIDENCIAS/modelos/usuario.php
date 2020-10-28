@@ -23,8 +23,10 @@
          */
         public function buscarUsuario($usuario,$contrasenya) {
 
+            session_destroy();
+
             $devolver = false;
-            $result = $this->db->query("SELECT id, usuario, foto
+            $result = $this->db->query("SELECT id, usuario, foto, rol
                                             FROM usuarios
                                             WHERE usuario = '$usuario' AND
                                             BINARY contrasenya = '$contrasenya'");
@@ -38,6 +40,7 @@
                 $_SESSION["usuario"] = $usuario->usuario;
                 $_SESSION["idUsuario"] = $usuario->id;
                 $_SESSION["foto"] = $usuario->foto;
+                $_SESSION["rol"] = $usuario->rol;
 
                 $devolver = true;
             
