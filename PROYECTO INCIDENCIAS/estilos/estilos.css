@@ -6,6 +6,7 @@
 body {
     font-family: mifuente;
     background-color: rgb(255, 210, 112);
+    margin: 0px;
 }
 
 #formularioIniciarSesion {
@@ -71,4 +72,69 @@ body {
 }
 #formularioIniciarSesion a:visited {
     color:  rgb(182, 124, 0);
+}
+
+#tablaIncidencias {
+    width: 950px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+}
+
+#header {
+    width: 100%;
+    height: 70px;
+    background-color: white;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    margin-bottom: 50px;
+    box-shadow: 0px 0px 10px black;
+}
+
+#botonCerrarSesion {
+    float: right;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 30px;
+    padding: 10px 20px 10px 20px;
+    background-color: #9c2525;
+    border: none;
+    border-radius: 2px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+#botonCerrarSesion:hover {
+    background-color: #b31616;
+    box-shadow: 0px 0px 10px grey;
+}
+
+#logo {
+    width: 130px;
+    position: relative;
+    float: left;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 15px;
+}
+
+#tablaHeader {
+    width: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    padding-left: 30px;
+    height: 90px;
+}
+
+#tablaHeader td {
+    padding: 0px 10px 0px 10px;
+    cursor: pointer;
+}
+#tablaHeader td:hover {
+    background-color: rgb(255, 210, 112);
+    box-shadow: 0 5px 10px -5px black;
 }

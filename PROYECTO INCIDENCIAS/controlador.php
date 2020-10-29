@@ -23,7 +23,7 @@
 
             if (isset($_SESSION["usuario"])) {
 
-                $this->vista->mostrar("incidencias/mostrarListaIncidencias");
+                $this->vista->mostrar("incidencia/listaIncidencias");
 
             } else {
 
@@ -31,15 +31,13 @@
 
             }
 
-            
-
         }
 
         public function mostrarFormularioRegistrarse() {
 
             if (isset($_SESSION["usuario"])) {
 
-                $this->vista->mostrar("incidencias/mostrarListaIncidencias");
+                $this->vista->mostrar("incidencia/listaIncidencias");
 
             } else {
 
@@ -68,6 +66,13 @@
 
         }
 
+        public function cerrarSesion() {
+
+            session_destroy();
+            header("Location: index.php");
+
+        }
+
         public function procesarRegistro() {
 
             $usuario = $_REQUEST["usuario"];
@@ -78,7 +83,7 @@
             if ($this->usuario->insert($usuario, $email, $contrasenya1, $contrasenya2)) {
 
                 $this->usuario->buscarUsuario($usuario, $contrasenya1);
-                //mostrarListaIncidencias();
+                $this->mostrarListaIncidencias();
 
             } else  {
 
@@ -96,23 +101,19 @@
 
             if (isset($_SESSION["usuario"])) {
 
-                if ($_SESSION["rol"] == "admin") {
+                $data["rolUsuario"] = $_SESSION["rol"];
+
+                if ($_SESSION["rol"] == "admin" || $_SESSION["rol"] == "estandar") {
 
                     $data["listaIncidencias"] = $this->incidencia->getAll();
+                    $this->vista->mostrar("incidencia/listaIncidencias",$data);
 
-                } else if ($_SESSION["rol"] == "estandar") {
-
-                    $data["listaIncidencias"] = $this->incidencia->getAllEstandar();
-
-                } else if ($_SESSION["rol"] == "deshabilitado") {
+                } else if ($_SESSION["rol"] == "desactivado") {
 
                     $data["msjError"] = "Tu usuario aún no está habilitado. Inténtalo más tarde.";
-
-                    $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
+                     $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
 
                 }
-
-                $this->vista->mostrar("incidencia/listaIncidencias",$data);
 
             } else  {
 

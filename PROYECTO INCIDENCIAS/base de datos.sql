@@ -7,6 +7,7 @@ CREATE TABLE usuarios (
     usuario VARCHAR(50),
     email VARCHAR(70),
     contrasenya VARCHAR(50),
+    foto VARCHAR(100),
     rol VARCHAR(20)
 );
 
