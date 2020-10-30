@@ -44,9 +44,9 @@
 
             $devolver = null;
             $result = $this->db->query("SELECT *
-                                            FROM incidencias");
+                                        FROM incidencias");
 
-            if ($result->num_rows == 1) {
+            if ($result->num_rows != 0) {
 
                 $devolver = array();
 

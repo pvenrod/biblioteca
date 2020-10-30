@@ -5,7 +5,8 @@
 
 body {
     font-family: mifuente;
-    background-color: rgb(255, 210, 112);
+    background: linear-gradient(180deg, #8BC34A 0%, #ffecb3 0%, #f4433652 100%);
+    height: 100vh;
     margin: 0px;
 }
 
@@ -93,8 +94,7 @@ body {
 }
 
 #botonCerrarSesion {
-    float: right;
-    position: relative;
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
     margin-right: 30px;
@@ -106,6 +106,7 @@ body {
     color: white;
     cursor: pointer;
     outline: none;
+    right: 0px;
 }
 #botonCerrarSesion:hover {
     background-color: #b31616;
@@ -127,14 +128,44 @@ body {
     top: 50%;
     transform: translateY(-50%);
     padding-left: 30px;
-    height: 90px;
+    height: 60%;
 }
 
 #tablaHeader td {
-    padding: 0px 10px 0px 10px;
+    padding: 0px 20px 0px 20px;
     cursor: pointer;
+    border-radius: 10px;
+    border-bottom:2px solid white;
+    
 }
 #tablaHeader td:hover {
-    background-color: rgb(255, 210, 112);
-    box-shadow: 0 5px 10px -5px black;
+    transition: all 0.2s;
+    border-bottom: 2px solid #ffbf00;
+    background-color: #fffbee;
+    box-shadow: 0px 0px 10px #ffbf0048;
+}
+
+.divIncidencias {
+    background-color: #ffffff;
+    width: 80%;
+    height: auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0px 0px 5px grey;
+    padding: 0px 50px 60px 50px;
+}
+.divIncidencias:hover {
+    box-shadow: 0px 0px 10px grey;
+}
+
+.incidencia {
+    height: 100px;
+    width: 100%;
+    background-color: white;
+    top: 30px;
+    position: relative;
+}
+.incidencia:hover {
+    background-color: #f5f5f5;
 }
