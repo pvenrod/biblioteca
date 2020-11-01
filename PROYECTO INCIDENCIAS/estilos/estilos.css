@@ -170,9 +170,10 @@ body {
     text-align: center;
     transition: 0.5s;
     overflow: hidden;
+    box-shadow: 0px 0px 10px rgb(216, 216, 216);
 }
 .incidencia:hover {
-    background-color: #f5f5f5;
+    box-shadow: 0px 0px 10px rgb(172, 172, 172);
 }
 
 .maxPrioridad {
@@ -228,7 +229,6 @@ body {
 }
 
 .incidencia span:not(.bolaPrioridadIncidencia) {
-    padding: 0px 20px 0px 20px;
     position: relative;
     top: 20px;
 }
@@ -243,18 +243,13 @@ body {
     top: 5px;
 }
 
-.incidenciaCerrada {
-    height: 0px;
-    overflow: hidden;
-    margin-top: -37px;
-    transition: 0.5s;
-}
-
 .botonMostrarMas {
-    margin-top: 40px;
+    margin-top: 20px;
     padding: 5px 20px 5px 20px;
     cursor: pointer;
     background-color: rgb(179, 217, 248);
     border: none;
     outline: none;
+    font-weight: 700;
+    border-radius: 5px;
 }

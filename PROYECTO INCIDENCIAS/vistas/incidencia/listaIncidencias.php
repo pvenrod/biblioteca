@@ -44,14 +44,25 @@ if (count($data["listaIncidencias"]) > 0) {
         }
 
         echo "<div class='incidencia $colorIncidencia' id='" . (int)$incidencia->id . "'>
-                <span><strong>Fecha</strong>: $incidencia->fecha </span>
-                <span><strong>Lugar</strong>: $incidencia->lugar </span>
-                <span><strong>Equipo</strong>: $incidencia->equipo </span>
-                <span><strong>Estado</strong>: $incidencia->estado </span>
+                <table style='width: 80%; position: relative; left: 50%; transform: translateX(-50%)'>
+                    <tr>
+                        <td><span><strong>ID</strong>: $incidencia->id </span></td>
+                        <td><span><strong>Fecha</strong>: $incidencia->fecha </span></td>
+                        <td><span><strong>Lugar</strong>: $incidencia->lugar </span></td>
+                        <td><span><strong>Equipo</strong>: $incidencia->equipo </span></td>
+                        <td><span><strong>Estado</strong>: $incidencia->estado </span></td>
+                    </tr>
+                </table>
                 <span class='bolaPrioridadIncidencia $colorBolaPrioridad' title='$incidencia->prioridad PRIORIDAD'></span><br>
                 <button onclick='mostrar(" . $incidencia->id . "," . (int)$incidencia->id * 1000000 . ")' class='botonMostrarMas' id='" . (int)$incidencia->id * 1000000 . "'>Mostrar más</button><br>
-                <span><strong>Descripción</strong>: $incidencia->descripcion </span>
-                <span><strong>Obersvacones</strong>: $incidencia->observaciones </span>
+                <table style='width: 60%; position: relative; left: 50%; transform: translateX(-50%)'>
+                    <tr>
+                        <td style='width: 45%'><span><strong>Descripción</strong>: $incidencia->descripcion </span></td>
+                        <td  style='width: 10%'></td>
+                        <td style='width: 45%'><span><strong>Obersvacones</strong>: $incidencia->observaciones </span></td>
+                    </tr>
+                </table>
+                
             </div>
             <div class='ampliacion sinDesplegar'></div>";
         
