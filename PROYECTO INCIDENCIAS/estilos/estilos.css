@@ -145,7 +145,7 @@ body {
     box-shadow: 0px 0px 10px #ffbf0048;
 }
 
-.divIncidencias {
+#divIncidencias {
     background-color: #ffffff;
     width: 80%;
     height: auto;
@@ -155,17 +155,25 @@ body {
     box-shadow: 0px 0px 5px grey;
     padding: 0px 50px 70px 50px;
 }
-.divIncidencias:hover {
+#divIncidencias:hover {
     box-shadow: 0px 0px 10px grey;
 }
 
+#tituloIncidencias {
+    position: relative;
+    top: 30px;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
 .incidencia {
-    height: 100px;
+    height: 130px;
     width: 100%;
     background-color: white;
     top: 30px;
     position: relative;
-    margin-bottom: 30px;
+    margin-top: 30px;
     border-radius: 5px;
     text-align: center;
     transition: 0.5s;
@@ -228,9 +236,9 @@ body {
     background-color:   #1fb800;
 }
 
-.incidencia span:not(.bolaPrioridadIncidencia) {
+.incidencia span:not(.bolaPrioridadIncidencia){
     position: relative;
-    top: 20px;
+    top: 40px;
 }
 
 .bolaPrioridadIncidencia {
@@ -243,8 +251,9 @@ body {
     top: 5px;
 }
 
+
 .botonMostrarMas {
-    margin-top: 20px;
+    margin-top: 40px;
     padding: 5px 20px 5px 20px;
     cursor: pointer;
     background-color: rgb(179, 217, 248);
@@ -252,4 +261,36 @@ body {
     outline: none;
     font-weight: 700;
     border-radius: 5px;
+}
+.botonMostrarMas:hover {
+    background-color: rgb(140, 203, 255);
+}
+
+.botonModificarIncidencia {
+    position: relative;
+    top: 40px;
+    padding: 5px 20px 5px 20px;
+    background-color: #FFC107;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px grey;
+    cursor: pointer;
+    outline: none;
+}
+
+.botonCerrarIncidencia {
+    position: relative;
+    top: 40px;
+    padding: 5px 20px 5px 20px;
+    background-color: #ff8484;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px grey;
+    cursor: pointer;
+    outline: none;
+}
+
+.disabled {
+    cursor: not-allowed;
+    background-color: rgb(197, 197, 197);
 }

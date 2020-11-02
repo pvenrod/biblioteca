@@ -126,4 +126,18 @@
 
         }
 
+        public function mostrarFormularioModificarIncidencia() {
+
+            if (isset($_SESSION["usuario"])) {
+
+                $this->vista->mostrar("incidencia/listaIncidencias");
+
+            } else {
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion");
+
+            }
+
+        }
+
     }
