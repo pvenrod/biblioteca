@@ -35,14 +35,18 @@
 
                 $usuario = $result->fetch_object();
 
-                // Iniciamos la sesión
-                session_start();
-                $_SESSION["usuario"] = $usuario->usuario;
-                $_SESSION["idUsuario"] = $usuario->id;
-                $_SESSION["foto"] = $usuario->foto;
-                $_SESSION["rol"] = $usuario->rol;
+                if ($usuario->rol != "desactivado") {
 
-                $devolver = true;
+                    // Iniciamos la sesión
+                    session_start();
+                    $_SESSION["usuario"] = $usuario->usuario;
+                    $_SESSION["idUsuario"] = $usuario->id;
+                    $_SESSION["foto"] = $usuario->foto;
+                    $_SESSION["rol"] = $usuario->rol;
+
+                    $devolver = true;
+                
+                }
             
             }
 

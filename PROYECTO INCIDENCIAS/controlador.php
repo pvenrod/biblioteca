@@ -23,7 +23,9 @@
 
             if (isset($_SESSION["usuario"])) {
 
-                $this->vista->mostrar("incidencia/listaIncidencias");
+                $data["rolUsuario"] = $_SESSION["rol"];
+                $data["listaIncidencias"] = $this->incidencia->getAll();
+                $this->vista->mostrar("incidencia/listaIncidencias", $data);
 
             } else {
 
@@ -58,7 +60,7 @@
 
             } else  {
 
-                $data["msjError"] = "Usuario y/o contraseña incorrectos.";
+                $data["msjError"] = "Usuario y/o contraseña incorrectos o usuario deshabilitado.";
 
                 $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
 
@@ -82,13 +84,13 @@
 
             if ($this->usuario->insert($usuario, $email, $contrasenya1, $contrasenya2)) {
 
-                $this->usuario->buscarUsuario($usuario, $contrasenya1);
-                $this->mostrarListaIncidencias();
+                $data["msjError"] = "Te has registrado correctamente. En breves, tu usuario será habilitado.";
+                $_REQUEST = array();
+                $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
 
             } else  {
 
                 $data["msjError"] = "Introduce los datos correctamente.";
-
                 $this->vista->mostrar("usuario/formularioRegistrarse", $data);
 
             }
@@ -111,7 +113,7 @@
                 } else if ($_SESSION["rol"] == "desactivado") {
 
                     $data["msjError"] = "Tu usuario aún no está habilitado. Inténtalo más tarde.";
-                     $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
+                    $this->vista->mostrar("usuario/formularioIniciarSesion", $data);
 
                 }
 
@@ -138,6 +140,52 @@
 
             }
 
+        }
+
+        public function eliminarIncidencia() {
+
+            $incidencia = $_REQUEST["id"];
+
+            if (isset($_SESSION["usuario"])) {
+
+                if ($_SESSION["rol"] == "admin") {
+
+                    $this->incidencia->delete($incidencia);
+
+                }
+
+                $data["rolUsuario"] = $_SESSION["rol"];
+                $data["listaIncidencias"] = $this->incidencia->getAll();
+                $this->vista->mostrar("incidencia/listaIncidencias", $data);
+
+            } else {
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion");
+
+            }
+        }
+
+        public function marcarCerradaIncidencia() {
+
+            $incidencia = $_REQUEST["id"];
+
+            if (isset($_SESSION["usuario"])) {
+
+                if ($_SESSION["rol"] != "desactivado") {
+
+                    $this->incidencia->marcarCerrada($incidencia);
+
+                }
+
+                $data["rolUsuario"] = $_SESSION["rol"];
+                $data["listaIncidencias"] = $this->incidencia->getAll();
+                $this->vista->mostrar("incidencia/listaIncidencias", $data);
+
+            } else {
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion");
+
+            }
         }
 
     }

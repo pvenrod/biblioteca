@@ -168,7 +168,7 @@ body {
 }
 
 .incidencia {
-    height: 130px;
+    height: 150px;
     width: 100%;
     background-color: white;
     top: 30px;
@@ -277,6 +277,9 @@ body {
     cursor: pointer;
     outline: none;
 }
+.botonModificarIncidencia:hover {
+    background-color: #e2aa00;
+}
 
 .botonCerrarIncidencia {
     position: relative;
@@ -289,8 +292,110 @@ body {
     cursor: pointer;
     outline: none;
 }
+.botonCerrarIncidencia:hover:not(.disabled) {
+    background-color: #f57676;
+}
+
+.botonEliminarIncidencia {
+    position: relative;
+    top: 40px;
+    padding: 5px 20px 5px 20px;
+    background-color: #882929;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px grey;
+    cursor: pointer;
+    outline: none;
+    color: white;
+}
+.botonEliminarIncidencia:hover {
+    background-color: #6e1717;
+}
 
 .disabled {
     cursor: not-allowed;
     background-color: rgb(197, 197, 197);
+}
+
+#divConfirmacion {
+    position: absolute;
+    width: 460px;
+    height: 160px;
+    background-color: white;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 0px 10px black;
+}
+
+#fondo {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    opacity: 0.6;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+#divConfirmacion span, #divModificarIncidencia span, #divCrearIncidencia span {
+    font-size: 22px;
+    position: relative;
+    top: 20px;
+}
+
+#botonConfirmar {
+    position: relative;
+    top: 40px;
+    padding: 10px 20px 10px 20px;
+    background-color:#212d9c;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px grey;
+    cursor: pointer;
+    outline: none;
+    color: white;
+    margin-right: 10px;
+}
+#botonConfirmar:hover {
+    background-color: #1528da;
+}
+
+#botonCancelar {
+    position: relative;
+    top: 40px;
+    padding: 10px 20px 10px 20px;
+    background-color: #882929;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px grey;
+    cursor: pointer;
+    outline: none;
+    color: white;
+    margin-left: 10px;
+}
+#botonCancelar:hover {
+    background-color: #ac2121;
+}
+
+#divModificarIncidencia {
+    position: absolute;
+    width: 460px;
+    height: 660px;
+    background-color: white;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 0px 10px black;
+}
+
+#tablaModificar {
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    position: relative;
 }

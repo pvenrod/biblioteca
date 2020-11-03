@@ -43,8 +43,10 @@
         public function getAll() {
 
             $devolver = null;
-            $result = $this->db->query("SELECT *
-                                        FROM incidencias");
+            $result = $this->db->query("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
+                                        FROM incidencias
+                                        INNER JOIN usuarios
+                                            ON incidencias.usuario = usuarios.id");
 
             if ($result->num_rows != 0) {
 
@@ -62,62 +64,39 @@
 
         }
 
-
-        /**
-         * Función que devuelve todas las incidencias.
-         * @return Un objeto con todos los datos de todas las incidencias extraídos de la BD, o null en caso de error.
-         */
-        public function getAllEstandar() {
-
-            $devolver = null;
-
-            if ($result = $this->db->query("SELECT *
-                                            FROM incidencias")->num_rows == 1) {
-
-                $devolver = array();
-
-                while($fila = $result->fetch_object()) {
-
-                    $devolver[] = $fila;
-
-                }
-
-            }
-
-            return $devolver;
-
-        }
-
         
         /**
-         * Función para registrar nuevos usuarios.
-         * @param usuario El nombre de usuario.
-         * @param email El email del usuario.
-         * @param contrasenya La contraseña del usuario.
-         * @param contrasenya2 La confirmación de la contraseña.
+         * Función para registrar nuevas incidencias.
+         * @param fecha La fecha en la que se registra la incidencia.
+         * @param lugar El lugar de la incidencia.
+         * @param equipo El equipo de la incidencia.
+         * @param descripcion Desscripcion de la incidencia.
+         * @param observaciones Observaciones de la incidencia.
+         * @param estado Estado de la incidencia.
+         * @param usuario Usuario que ha abierto la incidencia.
+         * @param prioridad Prioridad de la incidencia. Si no se especifica, toma el valor de "BAJA".
          * @return 1 en caso de éxito, y 0 en caso de error.
          */
-        public function insert($fecha, $lugar, $equipo, $descripcion, $observaciones, $usuario, $estado, $prioridad) {
+        public function insert($fecha, $lugar, $equipo, $descripcion, $observaciones, $usuario, $estado, $prioridad = "BAJA") {
 
             $devolver = 0;
 
             $id = $this->db->query("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                    FROM incidencias")->fetch_object->id; // Saco el nuevo id para el usuario
+                                    FROM incidencias")->fetch_object->id; // Saco el nuevo id para la incidencia.
+            $fecha;
+            $lugar;
+            $equipo;
+            $descripcion;
+            $observaciones;
             $usuario;
-            $email;
-            $contrasenya;
-            $contrasenya2;
-            $rol = "estandar";
+            $estado;
+            $prioridad;
 
-            if ($contrasenya == $contrasenya2) {
-
-                $result = $this->db->query("INSERT INTO usuarios
-                                            VALUES
-                                                ('$id', '$usuario', '$email', '$contrasenya', '$rol'");
+            $result = $this->db->query("INSERT INTO incidencias
+                                        VALUES
+                                            ('$id', '$fecha', '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
                   
-                $devolver = $result->affected_rows;
-
-            }
+            $devolver = $result->affected_rows;
 
             return $devolver;
 
@@ -125,37 +104,37 @@
 
 
         /**
-         * Función para actualizar la información de los usuarios.
-         * @param id Es el id del usuario a actualizar.
-         * @param usuario Es el nombre de usuario del usuario a actualizar.
-         * @param email Es el nuevo email del usuario a actualizar.
-         * @param contrasenya Es la nueva contraseña del usuario a actualizar.
-         * @param contrasenya2 Es la confirmación de la contraseña.
-         * @param rol Es el rol del usuario a actualizar.
+         * Función para actualizar incidencias.
+         * @param fecha La fecha en la que se registra la incidencia.
+         * @param lugar El lugar de la incidencia.
+         * @param equipo El equipo de la incidencia.
+         * @param descripcion Desscripcion de la incidencia.
+         * @param observaciones Observaciones de la incidencia.
+         * @param estado Estado de la incidencia.
+         * @param usuario Usuario que ha abierto la incidencia.
+         * @param prioridad Prioridad de la incidencia. Si no se especifica, toma el valor de "BAJA".
          * @return 1 en caso de éxito, y 0 en caso de error.
          */
         public function update($id, $usuario, $email, $contrasenya, $contrasenya2, $rol) {
 
             $devolver = 0;
 
-            $id;
+            $fecha;
+            $lugar;
+            $equipo;
+            $descripcion;
+            $observaciones;
             $usuario;
-            $email;
-            $contrasenya;
-            $contrasenya2;
-            $rol;
+            $estado;
+            $prioridad;
 
-            if ($contrasenya == $contrasenya2) {
+            $this->delete($id);
 
-                $this->delete($id);
-
-                $result = $this->db->query("INSERT INTO usuarios
-                                            VALUES
-                                                ('$id', '$usuario', '$email', '$contrasenya', '$rol'");
+            $result = $this->db->query("INSERT INTO incidencias
+                                        VALUES
+                                            ('$id', '$fecha', '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
                   
-                $devolver = $result->affected_rows;
-
-            }
+            $devolver = $result->affected_rows;
 
             return $devolver;
 
@@ -163,22 +142,18 @@
 
 
         /**
-         * Función para actualizar la información de los usuarios.
-         * @param id Es el id del usuario a eliminar.
+         * Función para eliminar incidencias.
+         * @param id Es el id de la incidencia a eliminar.
          * @return 1 en caso de éxito, y 0 en caso de error.
          */
         public function delete($id) {
 
             $devolver = 0;
 
-            $result = $this->db->query("DELETE FROM usuarios
+            $result = $this->db->query("DELETE FROM incidencias
                                         WHERE id = '$id'");
 
-            // También vamos a borrar todas las incidencias creadas por este usuario.
-            $result2 = $this->db->query("DELETE FROM incidencias
-                                        WHERE usuario = '$id'");
-
-            $devolver = $result->affected_rows;
+            $devolver = $this->db->affected_rows;
 
             return $devolver;
 
