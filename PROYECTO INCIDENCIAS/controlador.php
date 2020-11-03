@@ -128,12 +128,26 @@
 
         }
 
-        public function mostrarFormularioModificarIncidencia() {
+        public function modificarIncidencia() {
 
             if (isset($_SESSION["usuario"])) {
 
-                $this->vista->mostrar("incidencia/listaIncidencias");
+                $id = $_REQUEST["id"];
+                $fecha = $_REQUEST["fecha"];
+                $lugar = $_REQUEST["lugar"];
+                $equipo = $_REQUEST["equipo"];
+                $descripcion = $_REQUEST["descripcion"];
+                $observaciones = $_REQUEST["observaciones"];
+                $usuario = $_REQUEST["usuario"];
+                $estado = $_REQUEST["estado"];
+                $prioridad = $_REQUEST["prioridad"];
 
+                $this->incidencia->update($id,$fecha,$lugar,$equipo,$descripcion,$observaciones,$usuario,$estado,$prioridad);
+
+                $data["rolUsuario"] = $_SESSION["rol"];
+                $data["listaIncidencias"] = $this->incidencia->getAll();
+                $this->vista->mostrar("incidencia/listaIncidencias", $data);
+                
             } else {
 
                 $this->vista->mostrar("usuario/formularioIniciarSesion");

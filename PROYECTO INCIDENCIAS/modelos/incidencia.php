@@ -115,7 +115,7 @@
          * @param prioridad Prioridad de la incidencia. Si no se especifica, toma el valor de "BAJA".
          * @return 1 en caso de éxito, y 0 en caso de error.
          */
-        public function update($id, $usuario, $email, $contrasenya, $contrasenya2, $rol) {
+        public function update($id,$fecha,$lugar,$equipo,$descripcion,$observaciones,$usuario,$estado,$prioridad) {
 
             $devolver = 0;
 
@@ -134,7 +134,7 @@
                                         VALUES
                                             ('$id', '$fecha', '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
                   
-            $devolver = $result->affected_rows;
+            $devolver = $this->db->affected_rows;
 
             return $devolver;
 

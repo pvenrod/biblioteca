@@ -398,4 +398,25 @@ body {
     left: 50%;
     transform: translateX(-50%);
     position: relative;
+    top: 50px;
+    text-align: left;
+}
+
+#tablaModificar input {
+    padding: 5px;
+    width: 100%;
+    outline: none;
+}
+
+#tablaModificar textarea {
+    padding: 5px;
+    width: 100%;
+    font-family: mifuente;
+    outline: none;
+    resize: none;
+}
+
+#tablaModificar select {
+    padding: 5px;
+    width: 100%;
 }
