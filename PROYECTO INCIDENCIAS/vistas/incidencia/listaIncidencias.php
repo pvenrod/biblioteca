@@ -520,6 +520,253 @@ echo "</div>
         }
         ";
 
+
+
+        echo "function nuevaIncidencia() {
+
+            var fondo = document.createElement('div');
+            fondo.setAttribute('id', 'fondo');
+
+            var div = document.createElement('div');
+            div.setAttribute('id','divModificarIncidencia');";
+
+            if ($data["rolUsuario"] == "admin") {
+
+                echo "div.setAttribute('style','height: 470px');";
+
+            } else {
+
+                echo "div.setAttribute('style','height: 390px');";
+
+            }
+
+            echo "var span = document.createElement('span');
+            span.innerHTML = 'Vas a crear una nueva incidencia:';
+
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');";
+
+            if ($data["rolUsuario"] == "admin") {
+
+                echo "form.setAttribute('action', 'index.php');";
+
+            } else {
+
+                echo "form.setAttribute('action', 'index.php');";
+
+            }
+
+            echo "var table = document.createElement('table');
+            table.setAttribute('id', 'tablaModificar');
+
+            var tr2 = document.createElement('tr');
+            var td1tr2 = document.createElement('td');
+            td1tr2.innerHTML = 'Lugar:';
+            var td2tr2 = document.createElement('td');
+            var inputLugar = document.createElement('input');
+            inputLugar.setAttribute('type','text');
+            inputLugar.setAttribute('name','lugar');
+
+            var tr3 = document.createElement('tr');
+            var td1tr3 = document.createElement('td');
+            td1tr3.innerHTML = 'Equipo:';
+            var td2tr3 = document.createElement('td');
+            var inputEquipo = document.createElement('input');
+            inputEquipo.setAttribute('type','text');
+            inputEquipo.setAttribute('name','equipo');
+
+            var tr4 = document.createElement('tr');
+            var td1tr4 = document.createElement('td');
+            td1tr4.innerHTML = 'Descripción:';
+            var td2tr4 = document.createElement('td');
+            var inputDesc = document.createElement('textarea');
+            inputDesc.setAttribute('type','text');
+            inputDesc.setAttribute('name','descripcion');
+
+            var tr5 = document.createElement('tr');
+            var td1tr5 = document.createElement('td');
+            td1tr5.innerHTML = 'Observaciones:';
+            var td2tr5 = document.createElement('td');
+            var inputObs = document.createElement('textarea');
+            inputObs.setAttribute('type','text');
+            inputObs.setAttribute('name','observaciones');
+
+            var inputAction = document.createElement('input');
+            inputAction.setAttribute('type','hidden');
+            inputAction.setAttribute('value','insertarIncidencia')
+            inputAction.setAttribute('name','action');
+
+            var inputId = document.createElement('input');
+            inputId.setAttribute('type','hidden');
+            inputId.setAttribute('name','id');";
+
+            if ($data["rolUsuario"] == "admin") {
+
+                echo "var tr1 = document.createElement('tr');
+                    var td1tr1 = document.createElement('td');
+                    td1tr1.innerHTML = 'Fecha y hora:';
+                    var td2tr1 = document.createElement('td');
+                    var inputFecha = document.createElement('input');
+                    inputFecha.setAttribute('type','text');
+                    inputFecha.setAttribute('name','fecha');
+        
+                    var tr6 = document.createElement('tr');
+                    var td1tr6 = document.createElement('td');
+                    td1tr6.innerHTML = 'Usuario:';
+                    var td2tr6 = document.createElement('td');
+                    var inputUsu = document.createElement('input');
+                    inputUsu.setAttribute('type','text');
+                    inputUsu.setAttribute('name','usuario');
+                    inputUsu.setAttribute('value'," . $_SESSION['idUsuario'] . ");
+        
+                    var tr7 = document.createElement('tr');
+                    var td1tr7 = document.createElement('td');
+                    td1tr7.innerHTML = 'Prioridad:';
+                    var td2tr7 = document.createElement('td');
+                    var inputPri = document.createElement('select');
+                    inputPri.setAttribute('type','text');
+                    inputPri.setAttribute('name','prioridad');
+        
+                    op1 = document.createElement('option');
+                    op1.setAttribute('selected','selected');
+                    op1.setAttribute('value','MAXIMA');
+                    op1.innerHTML = 'MAXIMA'
+                    op2 = document.createElement('option');
+                    op2.setAttribute('value','MEDIA');
+                    op2.innerHTML = 'MEDIA'
+                    op3 = document.createElement('option');
+                    op3.setAttribute('value','BAJA');
+                    op3.innerHTML = 'BAJA';
+                    op4 = document.createElement('option');
+                    op4.setAttribute('value','NINGUNA');
+                    op4.innerHTML = 'NINGUNA';
+        
+                    var tr8 = document.createElement('tr');
+                    var td1tr8 = document.createElement('td');
+                    td1tr8.innerHTML = 'Estado:';
+                    var td2tr8 = document.createElement('td');
+                    var inputEst = document.createElement('select');
+                    inputEst.setAttribute('type','text');
+                    inputEst.setAttribute('name','estado');
+        
+                    op5 = document.createElement('option');
+                    op5.setAttribute('selected','selected');
+                    op5.setAttribute('value','ABIERTA');
+                    op5.innerHTML = 'ABIERTA';
+                    op6 = document.createElement('option');
+                    op6.setAttribute('value','EN ESPERA');
+                    op6.innerHTML = 'EN ESPERA';
+                    op7 = document.createElement('option');
+                    op7.setAttribute('value','CERRADA');
+                    op7.innerHTML = 'CERRADA';";
+                
+            } else {
+
+                echo "var inputUsu = document.createElement('input');
+                    inputUsu.setAttribute('type','hidden');
+                    inputUsu.setAttribute('name','usuario');
+                    inputUsu.setAttribute('value'," . $_SESSION['idUsuario'] . ");
+
+                    var inputPri = document.createElement('input');
+                    inputPri.setAttribute('type','hidden');
+                    inputPri.setAttribute('name','prioridad');
+                    inputPri.setAttribute('value','MEDIA');
+                
+                    var tr8 = document.createElement('tr');
+                    var td1tr8 = document.createElement('td');
+                    td1tr8.innerHTML = 'Estado:';
+                    var td2tr8 = document.createElement('td');
+                    var inputEst = document.createElement('input');
+                    inputEst.setAttribute('type','hidden');
+                    inputEst.setAttribute('name','estado');
+                    inputEst.setAttribute('value','ABIERTA');";
+
+            }
+
+            echo "var boton1 = document.createElement('button');
+            boton1.innerHTML = 'Guardar';
+            boton1.setAttribute('id', 'botonConfirmar');
+            boton1.setAttribute('style','top:80px');
+
+            var boton2 = document.createElement('button');
+            boton2.innerHTML = 'Cancelar';
+            boton2.setAttribute('onclick','document.getElementById(\"fondo\").remove(); document.getElementById(\"divModificarIncidencia\").remove()');
+            boton2.setAttribute('id', 'botonCancelar');
+            boton2.setAttribute('style','top:80px');
+
+            
+
+            
+
+            document.body.appendChild(fondo);
+            document.body.appendChild(div);
+            div.appendChild(span);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(form);
+                form.appendChild(table);
+                    table.appendChild(tr2);
+                        tr2.appendChild(td1tr2);
+                        tr2.appendChild(td2tr2);
+                            td2tr2.appendChild(inputLugar); 
+                    table.appendChild(tr3);
+                        tr3.appendChild(td1tr3);
+                        tr3.appendChild(td2tr3);
+                            td2tr3.appendChild(inputEquipo); 
+                    table.appendChild(tr4);
+                        tr4.appendChild(td1tr4);
+                        tr4.appendChild(td2tr4);
+                            td2tr4.appendChild(inputDesc); 
+                    table.appendChild(tr5);
+                        tr5.appendChild(td1tr5);
+                        tr5.appendChild(td2tr5);
+                            td2tr5.appendChild(inputObs); ";
+    if ($data["rolUsuario"] == "admin") {
+
+        echo        "table.appendChild(tr1);
+                        tr1.appendChild(td1tr1);
+                        tr1.appendChild(td2tr1);
+                            td2tr1.appendChild(inputFecha); 
+                    table.appendChild(tr6);
+                        tr6.appendChild(td1tr6);
+                        tr6.appendChild(td2tr6);
+                            td2tr6.appendChild(inputUsu); 
+                    table.appendChild(tr7);
+                        tr7.appendChild(td1tr7);
+                        tr7.appendChild(td2tr7);
+                            td2tr7.appendChild(inputPri);
+                                inputPri.appendChild(op1);
+                                inputPri.appendChild(op2);
+                                inputPri.appendChild(op3);
+                                inputPri.appendChild(op4);
+                    table.appendChild(tr8);
+                        tr8.appendChild(td1tr8);
+                        tr8.appendChild(td2tr8);
+                            td2tr8.appendChild(inputEst);
+                                inputEst.appendChild(op5);
+                                inputEst.appendChild(op6);
+                                inputEst.appendChild(op7);";
+
+    } else {
+
+        echo "
+            form.appendChild(inputUsu);
+            form.appendChild(inputPri);
+            table.appendChild(tr8);
+                        tr8.appendChild(td2tr8);
+                            td2tr8.appendChild(inputEst);";
+
+    }
+                    
+    echo            "
+                
+                form.appendChild(inputId);
+                form.appendChild(inputAction);
+                form.appendChild(boton1);
+                form.appendChild(boton2);
+
+        }
+        ";
+
     if ($data["rolUsuario"] == "admin") {
 
         echo "function eliminarIncidencia(id) {

@@ -13,11 +13,11 @@
     if (isset($_SESSION["usuario"])) {
 
         echo "<div id='header'>
-            <img id='logo' src='img/logo.png' />
+            <a href='index.php'><img id='logo' src='img/logo.png' /></a>
             <table id='tablaHeader'>
                 <tr>
-                    <td>Incidencias</td>
-                    <td>Nueva Incidencia</td>
+                    <td onclick='location.href=\"index.php\"'>Incidencias</td>
+                    <td onclick='nuevaIncidencia()'>Nueva Incidencia</td>
                 </tr>
             </table>
             <button id='botonCerrarSesion' onclick='location.href=\"index.php?action=cerrarSesion\"'>Cerrar sesión</button>

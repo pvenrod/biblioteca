@@ -77,13 +77,12 @@
          * @param prioridad Prioridad de la incidencia. Si no se especifica, toma el valor de "BAJA".
          * @return 1 en caso de éxito, y 0 en caso de error.
          */
-        public function insert($fecha, $lugar, $equipo, $descripcion, $observaciones, $usuario, $estado, $prioridad = "BAJA") {
+        public function insert($lugar, $equipo, $descripcion, $observaciones, $usuario, $estado, $prioridad = "BAJA") {
 
             $devolver = 0;
 
             $id = $this->db->query("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                    FROM incidencias")->fetch_object->id; // Saco el nuevo id para la incidencia.
-            $fecha;
+                                    FROM incidencias")->fetch_object()->id; // Saco el nuevo id para la incidencia.
             $lugar;
             $equipo;
             $descripcion;
@@ -94,9 +93,9 @@
 
             $result = $this->db->query("INSERT INTO incidencias
                                         VALUES
-                                            ('$id', '$fecha', '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
+                                            ('$id', NOW(), '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
                   
-            $devolver = $result->affected_rows;
+            $devolver = $this->db->affected_rows;
 
             return $devolver;
 
@@ -151,6 +150,21 @@
             $devolver = 0;
 
             $result = $this->db->query("DELETE FROM incidencias
+                                        WHERE id = '$id'");
+
+            $devolver = $this->db->affected_rows;
+
+            return $devolver;
+
+        }
+
+
+        public function marcarCerrada($id) {
+
+            $devolver = 0;
+
+            $result = $this->db->query("UPDATE incidencias
+                                        SET estado = 'CERRADA'
                                         WHERE id = '$id'");
 
             $devolver = $this->db->affected_rows;

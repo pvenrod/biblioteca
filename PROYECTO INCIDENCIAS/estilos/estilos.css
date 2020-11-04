@@ -6,8 +6,10 @@
 body {
     font-family: mifuente;
     background: linear-gradient(180deg, #8BC34A 0%, #ffecb3 0%, #f4433652 100%);
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     margin: 0px;
+    margin-bottom: 50px;
 }
 
 #formularioIniciarSesion {

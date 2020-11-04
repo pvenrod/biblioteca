@@ -128,6 +128,32 @@
 
         }
 
+        public function insertarIncidencia() {
+
+            if (isset($_SESSION["usuario"])) {
+
+                $lugar = $_REQUEST["lugar"];
+                $equipo = $_REQUEST["equipo"];
+                $descripcion = $_REQUEST["descripcion"];
+                $observaciones = $_REQUEST["observaciones"];
+                $usuario = $_REQUEST["usuario"];
+                $estado = $_REQUEST["estado"];
+                $prioridad = $_REQUEST["prioridad"];
+
+                $this->incidencia->insert($lugar,$equipo,$descripcion,$observaciones,$usuario,$estado,$prioridad);
+
+                $data["rolUsuario"] = $_SESSION["rol"];
+                $data["listaIncidencias"] = $this->incidencia->getAll();
+                $this->vista->mostrar("incidencia/listaIncidencias", $data);
+                
+            } else {
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion");
+
+            }
+
+        }
+
         public function modificarIncidencia() {
 
             if (isset($_SESSION["usuario"])) {
@@ -156,6 +182,26 @@
 
         }
 
+        public function marcarCerradaIncidencia() {
+
+            if (isset($_SESSION["usuario"])) {
+
+                $id = $_REQUEST["id"];
+
+                $this->incidencia->marcarCerrada($id);
+
+                $data["rolUsuario"] = $_SESSION["rol"];
+                $data["listaIncidencias"] = $this->incidencia->getAll();
+                $this->vista->mostrar("incidencia/listaIncidencias", $data);
+                
+            } else {
+
+                $this->vista->mostrar("usuario/formularioIniciarSesion");
+
+            }
+
+        }
+
         public function eliminarIncidencia() {
 
             $incidencia = $_REQUEST["id"];
@@ -165,29 +211,6 @@
                 if ($_SESSION["rol"] == "admin") {
 
                     $this->incidencia->delete($incidencia);
-
-                }
-
-                $data["rolUsuario"] = $_SESSION["rol"];
-                $data["listaIncidencias"] = $this->incidencia->getAll();
-                $this->vista->mostrar("incidencia/listaIncidencias", $data);
-
-            } else {
-
-                $this->vista->mostrar("usuario/formularioIniciarSesion");
-
-            }
-        }
-
-        public function marcarCerradaIncidencia() {
-
-            $incidencia = $_REQUEST["id"];
-
-            if (isset($_SESSION["usuario"])) {
-
-                if ($_SESSION["rol"] != "desactivado") {
-
-                    $this->incidencia->marcarCerrada($incidencia);
 
                 }
 
