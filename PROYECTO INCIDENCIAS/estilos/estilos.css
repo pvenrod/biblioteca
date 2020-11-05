@@ -320,7 +320,7 @@ body {
 }
 
 #divConfirmacion {
-    position: absolute;
+    position: fixed;
     width: 460px;
     height: 160px;
     background-color: white;
@@ -337,7 +337,7 @@ body {
     height: 100vh;
     background-color: black;
     opacity: 0.6;
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0px;
 }

@@ -7,94 +7,99 @@
 echo "<div id='divIncidencias'>
         <span id='tituloIncidencias'>Lista de incidencias:</span>";
 
-if (count($data["listaIncidencias"]) > 0) {
 
-    foreach($data["listaIncidencias"] as $incidencia) {
+if (is_array($data["listaIncidencias"])) {
 
-        $colorIncidencia;
-        $colorFuente;
-        $colorBolaPrioridad;
+    if (count($data["listaIncidencias"]) > 0) {
 
-        switch ($incidencia->prioridad) { // Este switch es para determinar el color que va a tener cada incidencia, en función de su prioridad.
-            case "MAXIMA":
-                $colorIncidencia = " maxPrioridad";
-                $colorFuente = " maxPrioridadF";
-                $colorBolaPrioridad = " maxPrioridadB";
-            break;
-            case "MEDIA":
-                $colorIncidencia = " medPrioridad";
-                $colorFuente = " medPrioridadF";
-                $colorBolaPrioridad = " medPrioridadB";
-            break;
-            case "BAJA":
-                $colorIncidencia = " bajaPrioridad";
-                $colorFuente = " bajaPrioridadF";
-                $colorBolaPrioridad = " bajaPrioridadB";
-            break;
-            default:
-                $colorIncidencia = " ninPrioridad";
-                $colorFuente = " ninPrioridadF";
-                $colorBolaPrioridad = " ninPrioridadB";
-
-        }
-
-        echo "<div class='incidencia $colorIncidencia' id='" . (int)$incidencia->id . "'>
-                <table style='width: 80%; position: relative; left: 50%; transform: translateX(-50%)'>
-                    <tr>
-                        <td><span><strong>ID</strong>:<br> $incidencia->id </span></td>
-                        <td><span><strong>Lugar</strong>:<br> $incidencia->lugar </span></td>
-                        <td><span><strong>Equipo</strong>:<br> $incidencia->equipo </span></td>
-                        <td><span><strong>Estado</strong>:<br> $incidencia->estado </span></td>";
-
-        if ($data["rolUsuario"] == "admin") {
-
-            echo        "<td><span><strong>Usuario</strong>:<br> $incidencia->nombreUsuario </span></td>";
-
-        }
-
-        echo            "<td><button class='botonModificarIncidencia' onclick='modificarIncidencia(\"$incidencia->id\", \"$incidencia->fecha\", \"$incidencia->lugar\", \"$incidencia->equipo\", \"$incidencia->descripcion\", \"$incidencia->observaciones\", \"$incidencia->idUsuario\", \"$incidencia->estado\", \"$incidencia->prioridad\")'>Modificar</button></td>";
+        foreach($data["listaIncidencias"] as $incidencia) {
+    
+            $colorIncidencia;
+            $colorFuente;
+            $colorBolaPrioridad;
+    
+            switch ($incidencia->prioridad) { // Este switch es para determinar el color que va a tener cada incidencia, en función de su prioridad.
+                case "MAXIMA":
+                    $colorIncidencia = " maxPrioridad";
+                    $colorFuente = " maxPrioridadF";
+                    $colorBolaPrioridad = " maxPrioridadB";
+                break;
+                case "MEDIA":
+                    $colorIncidencia = " medPrioridad";
+                    $colorFuente = " medPrioridadF";
+                    $colorBolaPrioridad = " medPrioridadB";
+                break;
+                case "BAJA":
+                    $colorIncidencia = " bajaPrioridad";
+                    $colorFuente = " bajaPrioridadF";
+                    $colorBolaPrioridad = " bajaPrioridadB";
+                break;
+                default:
+                    $colorIncidencia = " ninPrioridad";
+                    $colorFuente = " ninPrioridadF";
+                    $colorBolaPrioridad = " ninPrioridadB";
+    
+            }
+    
+            echo "<div class='incidencia $colorIncidencia' id='" . (int)$incidencia->id . "'>
+                    <table style='width: 80%; position: relative; left: 50%; transform: translateX(-50%)'>
+                        <tr>
+                            <td><span><strong>ID</strong>:<br> $incidencia->id </span></td>
+                            <td><span><strong>Lugar</strong>:<br> $incidencia->lugar </span></td>
+                            <td><span><strong>Equipo</strong>:<br> $incidencia->equipo </span></td>
+                            <td><span><strong>Estado</strong>:<br> $incidencia->estado </span></td>";
+    
+            if ($data["rolUsuario"] == "admin") {
+    
+                echo        "<td><span><strong>Usuario</strong>:<br> $incidencia->nombreUsuario </span></td>";
+    
+            }
+    
+            echo            "<td><button class='botonModificarIncidencia' onclick='modificarIncidencia(\"$incidencia->id\", \"$incidencia->fecha\", \"$incidencia->lugar\", \"$incidencia->equipo\", \"$incidencia->descripcion\", \"$incidencia->observaciones\", \"$incidencia->idUsuario\", \"$incidencia->estado\", \"$incidencia->prioridad\")'>Modificar</button></td>";
+            
+            if ($incidencia->estado != "CERRADA") { // Si la incidencia no está cerrada, aparecerá un botón para cerrarla.
+    
+                echo        "<td><button class='botonCerrarIncidencia' onclick='marcarCerradaIncidencia($incidencia->id)'>Marcar como cerrada</button></td>";
+    
+            } else { // En caso contrario, el botón estará deshabilitado.
+    
+                echo        "<td><button title='La incidencia ya se encuentra cerrada.' class='botonCerrarIncidencia disabled'>Marcar como cerrada</button></td>";
+    
+            }
+            if ($data["rolUsuario"] == "admin") { // Si el usuario es "admin", se le mostrará la opción de eliminar las incidencias.
+    
+                echo        "<td><button class='botonEliminarIncidencia' onclick='eliminarIncidencia($incidencia->id)'>Eliminar</button></td>";
         
-        if ($incidencia->estado != "CERRADA") { // Si la incidencia no está cerrada, aparecerá un botón para cerrarla.
-
-            echo        "<td><button class='botonCerrarIncidencia' onclick='marcarCerradaIncidencia($incidencia->id)'>Marcar como cerrada</button></td>";
-
-        } else { // En caso contrario, el botón estará deshabilitado.
-
-            echo        "<td><button title='La incidencia ya se encuentra cerrada.' class='botonCerrarIncidencia disabled'>Marcar como cerrada</button></td>";
-
-        }
-        if ($data["rolUsuario"] == "admin") { // Si el usuario es "admin", se le mostrará la opción de eliminar las incidencias.
-
-            echo        "<td><button class='botonEliminarIncidencia' onclick='eliminarIncidencia($incidencia->id)'>Eliminar</button></td>";
+            }
+    
+            echo        "</tr>
+                    </table>
+                    <span style='position: absolute; top: 5px; left: 10px;'>$incidencia->fecha</span>
+                    <span class='bolaPrioridadIncidencia $colorBolaPrioridad' title='$incidencia->prioridad PRIORIDAD'></span><br>
+                    <button onclick='mostrar(" . $incidencia->id . "," . (int)$incidencia->id * 1000000 . ")' class='botonMostrarMas' id='" . (int)$incidencia->id * 1000000 . "'>Mostrar más...</button><br>
+                    <table style='width: 60%; position: relative; left: 50%; transform: translateX(-50%)'>
+                        <tr>
+                            <td style='width: 45%'><span><strong>Descripción</strong>: $incidencia->descripcion </span></td>
+                            <td  style='width: 10%'></td>
+                            <td style='width: 45%'><span><strong>Obersvacones</strong>: $incidencia->observaciones </span></td>
+                        </tr>
+                    </table><br>
+                    
+                </div>";
+            
+            //echo    "<td>" . $incidencia->fecha . "</td>
+                    //<td>" . $incidencia->lugar . "</td>
+                    //<td>" . $incidencia->equipo . "</td>
+                   // <td>" . $incidencia->descripcion . "</td>
+                   // <td>" . $incidencia->observaciones . "</td>";
     
         }
+    
+    } 
+}
+else {
 
-        echo        "</tr>
-                </table>
-                <span style='position: absolute; top: 5px; left: 10px;'>$incidencia->fecha</span>
-                <span class='bolaPrioridadIncidencia $colorBolaPrioridad' title='$incidencia->prioridad PRIORIDAD'></span><br>
-                <button onclick='mostrar(" . $incidencia->id . "," . (int)$incidencia->id * 1000000 . ")' class='botonMostrarMas' id='" . (int)$incidencia->id * 1000000 . "'>Mostrar más...</button><br>
-                <table style='width: 60%; position: relative; left: 50%; transform: translateX(-50%)'>
-                    <tr>
-                        <td style='width: 45%'><span><strong>Descripción</strong>: $incidencia->descripcion </span></td>
-                        <td  style='width: 10%'></td>
-                        <td style='width: 45%'><span><strong>Obersvacones</strong>: $incidencia->observaciones </span></td>
-                    </tr>
-                </table><br>
-                
-            </div>";
-        
-        //echo    "<td>" . $incidencia->fecha . "</td>
-                //<td>" . $incidencia->lugar . "</td>
-                //<td>" . $incidencia->equipo . "</td>
-               // <td>" . $incidencia->descripcion . "</td>
-               // <td>" . $incidencia->observaciones . "</td>";
-
-    }
-
-} else {
-
-    echo "No existe ninguna incidencia actualmente.";
+    echo "<br><span style='position: absolute; top: 80px; left: 50%; transform: translateX(-50%);'>Aún no has creado ninguna incidencia.</span><br>";
 
 }
 
@@ -670,7 +675,7 @@ echo "</div>
                     var inputPri = document.createElement('input');
                     inputPri.setAttribute('type','hidden');
                     inputPri.setAttribute('name','prioridad');
-                    inputPri.setAttribute('value','MEDIA');
+                    inputPri.setAttribute('value','BAJA');
                 
                     var tr8 = document.createElement('tr');
                     var td1tr8 = document.createElement('td');

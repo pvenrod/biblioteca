@@ -43,10 +43,26 @@
         public function getAll() {
 
             $devolver = null;
-            $result = $this->db->query("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
+            $usuario = $_SESSION["idUsuario"];
+            $rol = $_SESSION["rol"];
+
+            if ($rol == "admin") {
+
+                $result = $this->db->query("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
                                         FROM incidencias
                                         INNER JOIN usuarios
                                             ON incidencias.usuario = usuarios.id");
+
+            } else if ($rol == "estandar") {
+
+                $result = $this->db->query("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
+                                        FROM incidencias
+                                        INNER JOIN usuarios
+                                            ON incidencias.usuario = usuarios.id
+                                        WHERE usuarios.id = $usuario");
+
+            }
+            
 
             if ($result->num_rows != 0) {
 
@@ -164,7 +180,8 @@
             $devolver = 0;
 
             $result = $this->db->query("UPDATE incidencias
-                                        SET estado = 'CERRADA'
+                                        SET estado = 'CERRADA',
+                                            prioridad = 'NINGUNA'
                                         WHERE id = '$id'");
 
             $devolver = $this->db->affected_rows;
