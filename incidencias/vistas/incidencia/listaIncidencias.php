@@ -612,7 +612,7 @@ echo "</div>
                     td1tr1.innerHTML = 'Fecha y hora:';
                     var td2tr1 = document.createElement('td');
                     var inputFecha = document.createElement('input');
-                    inputFecha.setAttribute('type','text');
+                    inputFecha.setAttribute('type','hidden');
                     inputFecha.setAttribute('name','fecha');
         
                     var tr6 = document.createElement('tr');
