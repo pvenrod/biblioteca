@@ -727,11 +727,7 @@ echo "</div>
                             td2tr5.appendChild(inputObs); ";
     if ($data["rolUsuario"] == "admin") {
 
-        echo        "table.appendChild(tr1);
-                        tr1.appendChild(td1tr1);
-                        tr1.appendChild(td2tr1);
-                            td2tr1.appendChild(inputFecha); 
-                    table.appendChild(tr6);
+        echo        "table.appendChild(tr6);
                         tr6.appendChild(td1tr6);
                         tr6.appendChild(td2tr6);
                             td2tr6.appendChild(inputUsu); 
