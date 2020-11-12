@@ -24,17 +24,11 @@
          */
         public function get($id) {
             
-            $devolver = null;
+            $result = $this->db->query("SELECT *
+                                        FROM incidencias
+                                        WHERE id = '$id'");
 
-            if ($result = $this->db->query("SELECT *
-                                            FROM incidencias
-                                            WHERE id = '$id'")->num_rows == 1) {
-
-                $devolver = $result->fetch_object();
-
-            }
-
-            return $devolver;
+            return $result;
 
         }
 
@@ -44,7 +38,7 @@
          */
         public function getAll() {
 
-            $result;
+            $result = false;
             $usuario = $_SESSION["idUsuario"];
             $rol = $_SESSION["rol"];
 
@@ -84,10 +78,8 @@
          */
         public function insert($lugar, $equipo, $descripcion, $observaciones, $usuario, $estado, $prioridad = "BAJA") {
 
-            $devolver = 0;
-
-            $id = $this->db->query("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                    FROM incidencias")->fetch_object()->id; // Saco el nuevo id para la incidencia.
+            $id = $this->db->consulta("SELECT IFNULL(MAX(id), 0) + 1 as id
+                                    FROM incidencias")->id; // Saco el nuevo id para la incidencia.
             $lugar;
             $equipo;
             $descripcion;
@@ -96,13 +88,11 @@
             $estado;
             $prioridad;
 
-            $result = $this->db->query("INSERT INTO incidencias
-                                        VALUES
-                                            ('$id', NOW(), '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
-                  
-            $devolver = $this->db->affected_rows;
+            $result = $this->db->modificacion("INSERT INTO incidencias
+                                            VALUES
+                                                ('$id', NOW(), '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
 
-            return $devolver;
+            return $result;
 
         }
 
@@ -121,8 +111,6 @@
          */
         public function update($id,$fecha,$lugar,$equipo,$descripcion,$observaciones,$usuario,$estado,$prioridad) {
 
-            $devolver = 0;
-
             $fecha;
             $lugar;
             $equipo;
@@ -134,13 +122,11 @@
 
             $this->delete($id);
 
-            $result = $this->db->query("INSERT INTO incidencias
-                                        VALUES
-                                            ('$id', '$fecha', '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
-                  
-            $devolver = $this->db->affected_rows;
+            $result = $this->db->modificacion("INSERT INTO incidencias
+                                            VALUES
+                                                ('$id', '$fecha', '$lugar', '$equipo', '$descripcion', '$observaciones', '$usuario', '$estado', '$prioridad')");
 
-            return $devolver;
+            return $result;
 
         }
 
@@ -152,30 +138,22 @@
          */
         public function delete($id) {
 
-            $devolver = 0;
+            $result = $this->db->modificacion("DELETE FROM incidencias
+                                            WHERE id = '$id'");
 
-            $result = $this->db->query("DELETE FROM incidencias
-                                        WHERE id = '$id'");
-
-            $devolver = $this->db->affected_rows;
-
-            return $devolver;
+            return $result;
 
         }
 
 
         public function marcarCerrada($id) {
 
-            $devolver = 0;
-
             $result = $this->db->query("UPDATE incidencias
                                         SET estado = 'CERRADA',
                                             prioridad = 'NINGUNA'
                                         WHERE id = '$id'");
 
-            $devolver = $this->db->affected_rows;
-
-            return $devolver;
+            return $result;
 
         }
     }

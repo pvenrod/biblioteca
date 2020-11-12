@@ -97,10 +97,10 @@
          */
         public function insert($usuario, $email, $contrasenya1, $contrasenya2) {
 
-            $devolver = 0;
+            $result = 0;
 
-            $id = $this->db->query("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                    FROM usuarios")->fetch_object()->id; // Saco el nuevo id para el usuario
+            $id = $this->db->consulta("SELECT IFNULL(MAX(id), 0) + 1 as id
+                                        FROM usuarios")->id; // Saco el nuevo id para el usuario
             $usuario;
             $email;
             $contrasenya1;
@@ -110,15 +110,13 @@
 
             if ($contrasenya1 == $contrasenya2) {
 
-                $result = $this->db->query("INSERT INTO usuarios
-                                            VALUES
-                                                ('$id', '$usuario', '$email', '$contrasenya1', '$foto', '$rol')");
-                  
-                $devolver = $this->db->affected_rows;
+                $result = $this->db->modificacion("INSERT INTO usuarios
+                                                    VALUES
+                                                        ('$id', '$usuario', '$email', '$contrasenya1', '$foto', '$rol')");
 
             }
 
-            return $devolver;
+            return $result;
 
         }
 
@@ -135,7 +133,7 @@
          */
         public function update($id, $usuario, $email, $contrasenya, $contrasenya2, $rol) {
 
-            $devolver = 0;
+            $result = 0;
 
             $id;
             $usuario;
@@ -148,15 +146,13 @@
 
                 $this->delete($id);
 
-                $result = $this->db->query("INSERT INTO usuarios
-                                            VALUES
-                                                ('$id', '$usuario', '$email', '$contrasenya', '$rol'");
-                  
-                $devolver = $result->affected_rows;
+                $result = $this->db->modificacion("INSERT INTO usuarios
+                                                VALUES
+                                                    ('$id', '$usuario', '$email', '$contrasenya', '$rol'");
 
             }
 
-            return $devolver;
+            return $result;
 
         }
 
@@ -168,18 +164,15 @@
          */
         public function delete($id) {
 
-            $devolver = 0;
-
-            $result = $this->db->query("DELETE FROM usuarios
-                                        WHERE id = '$id'");
+            $result = $this->db->modificacion("DELETE FROM usuarios
+                                            WHERE id = '$id'");
 
             // También vamos a borrar todas las incidencias creadas por este usuario.
-            $result2 = $this->db->query("DELETE FROM incidencias
-                                        WHERE usuario = '$id'");
+            $result2 = $this->db->modificacion("DELETE FROM incidencias
+                                             WHERE usuario = '$id'");
 
-            $devolver = $result->affected_rows;
 
-            return $devolver;
+            return $result;
 
         }
     }
