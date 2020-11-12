@@ -79,7 +79,7 @@
         public function insert($lugar, $equipo, $descripcion, $observaciones, $usuario, $estado, $prioridad = "BAJA") {
 
             $id = $this->db->consulta("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                    FROM incidencias")->id; // Saco el nuevo id para la incidencia.
+                                    FROM incidencias")[0]->id; // Saco el nuevo id para la incidencia.
             $lugar;
             $equipo;
             $descripcion;

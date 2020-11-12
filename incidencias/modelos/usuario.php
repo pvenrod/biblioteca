@@ -100,7 +100,7 @@
             $result = 0;
 
             $id = $this->db->consulta("SELECT IFNULL(MAX(id), 0) + 1 as id
-                                        FROM usuarios")->id; // Saco el nuevo id para el usuario
+                                        FROM usuarios")[0]->id; // Saco el nuevo id para el usuario
             $usuario;
             $email;
             $contrasenya1;
