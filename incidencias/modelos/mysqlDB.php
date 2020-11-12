@@ -53,7 +53,7 @@
          */
         public function modificacion($sql) {
 
-            $this->db->query($sql)
+            $this->db->query($sql);
             
             return $this->db->affected_rows;
 
