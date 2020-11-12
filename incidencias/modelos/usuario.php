@@ -28,26 +28,29 @@
             session_destroy();
 
             $devolver = false;
-            $result = $this->db->consulta("SELECT id, usuario, foto, rol
+
+            if ($result = $this->db->consulta("SELECT id, usuario, foto, rol
                                             FROM usuarios
                                             WHERE usuario = '$usuario' AND
-                                            BINARY contrasenya = '$contrasenya'");
+                                            BINARY contrasenya = '$contrasenya'")) {
 
-            if (count($result) == 1) {
+                foreach ($result as $usuario) { //Uso un foreach para que la forma de acceso al objeto sea siempre la misma, y no accediendo a un íncide del array directamente.
 
-                if ($result[0]->rol != "desactivado") {
+                    if ($usuario->rol != "desactivado") {
 
-                    // Iniciamos la sesión
-                    session_start();
-                    $_SESSION["usuario"] = $result[0]->usuario;
-                    $_SESSION["idUsuario"] = $result[0]->id;
-                    $_SESSION["foto"] = $result[0]->foto;
-                    $_SESSION["rol"] =$result[0]->rol;
+                        // Iniciamos la sesión
+                        session_start();
+                        $_SESSION["usuario"] = $usuario->usuario;
+                        $_SESSION["idUsuario"] = $usuario->id;
+                        $_SESSION["foto"] = $usuario->foto;
+                        $_SESSION["rol"] = $usuario->rol;
 
-                    $devolver = true;
-                
+                        $devolver = true;
+                    
+                    }
+
                 }
-            
+
             }
 
             return $devolver;
@@ -62,17 +65,11 @@
          */
         public function get($id) {
             
-            $devolver = null;
-
-            if ($result = $this->db->query("SELECT *
+            $result = $this->db->consulta("SELECT *
                                             FROM usuarios
-                                            WHERE id = '$id'")->num_rows == 1) {
+                                            WHERE id = '$id'");
 
-                $devolver = $result->fetch_object();
-
-            }
-
-            return $devolver;
+            return $result;
 
         }
 
@@ -82,22 +79,10 @@
          */
         public function getAll() {
 
-            $devolver = null;
+            $result = $this->db->consulta("SELECT *
+                                            FROM usuarios")
 
-            if ($result = $this->db->query("SELECT *
-                                            FROM usuarios")->num_rows == 1) {
-
-                $devolver = array();
-
-                while($fila = $result->fetch_object()) {
-
-                    $devolver[] = $fila;
-
-                }
-
-            }
-
-            return $devolver;
+            return $result;
 
         }
 

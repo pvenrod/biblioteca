@@ -26,9 +26,17 @@
 
             if ($result = $this->db->query($sql)) {
 
-                while ($fila = $result->fetch_object()) {
+                if ($result->num_rows > 0) {
 
-                    $arrayResult[] = $fila;
+                    while ($fila = $result->fetch_object()) {
+
+                        $arrayResult[] = $fila;
+    
+                    }
+
+                } else {
+
+                    $arrayResult = false;
 
                 }
                 

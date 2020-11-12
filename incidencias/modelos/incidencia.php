@@ -1,5 +1,7 @@
 <?php
 
+    include_once("mysqlDB.php");
+
     class Incidencia {
 
         private $db;
@@ -10,7 +12,7 @@
          */
         public function __construct() {
 
-            $this->db = new mysqli("localhost","paolo","Gji54@7s","paolo-veneruso");
+            $this->db = new mysqlDB("localhost","paolo","Gji54@7s","paolo-veneruso");
 
         }
 
@@ -42,41 +44,28 @@
          */
         public function getAll() {
 
-            $devolver = null;
+            $result;
             $usuario = $_SESSION["idUsuario"];
             $rol = $_SESSION["rol"];
 
             if ($rol == "admin") {
 
-                $result = $this->db->query("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
-                                        FROM incidencias
-                                        INNER JOIN usuarios
-                                            ON incidencias.usuario = usuarios.id");
+                $result = $this->db->consulta("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
+                                                FROM incidencias
+                                                INNER JOIN usuarios
+                                                    ON incidencias.usuario = usuarios.id");
 
             } else if ($rol == "estandar") {
 
-                $result = $this->db->query("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
-                                        FROM incidencias
-                                        INNER JOIN usuarios
-                                            ON incidencias.usuario = usuarios.id
-                                        WHERE usuarios.id = $usuario");
-
-            }
-            
-
-            if ($result->num_rows != 0) {
-
-                $devolver = array();
-
-                while($fila = $result->fetch_object()) {
-
-                    $devolver[] = $fila;
-
-                }
+                $result = $this->db->consulta("SELECT incidencias.*, usuarios.usuario as nombreUsuario, usuarios.id as idUsuario
+                                                FROM incidencias
+                                                INNER JOIN usuarios
+                                                    ON incidencias.usuario = usuarios.id
+                                                WHERE usuarios.id = $usuario");
 
             }
 
-            return $devolver;
+            return $result;
 
         }
 
