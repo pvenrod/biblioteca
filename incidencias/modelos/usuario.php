@@ -80,7 +80,7 @@
         public function getAll() {
 
             $result = $this->db->consulta("SELECT *
-                                            FROM usuarios")
+                                            FROM usuarios");
 
             return $result;
 
