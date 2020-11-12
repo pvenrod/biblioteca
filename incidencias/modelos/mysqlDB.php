@@ -24,7 +24,7 @@
 
             $arrayResult = array();
 
-            if ($result = $this->db->query(sql)) {
+            if ($result = $this->db->query($sql)) {
 
                 while ($fila = $result->fetch_object()) {
 

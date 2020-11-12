@@ -28,23 +28,21 @@
             session_destroy();
 
             $devolver = false;
-            $usuario = $this->db->consulta("SELECT id, usuario, foto, rol
+            $result = $this->db->consulta("SELECT id, usuario, foto, rol
                                             FROM usuarios
                                             WHERE usuario = '$usuario' AND
                                             BINARY contrasenya = '$contrasenya'");
 
-            if ($result->num_rows == 1) {
+            if (count($result) == 1) {
 
-                $usuario = $result->fetch_object();
-
-                if ($usuario->rol != "desactivado") {
+                if ($result[0]->rol != "desactivado") {
 
                     // Iniciamos la sesión
                     session_start();
-                    $_SESSION["usuario"] = $usuario->usuario;
-                    $_SESSION["idUsuario"] = $usuario->id;
-                    $_SESSION["foto"] = $usuario->foto;
-                    $_SESSION["rol"] = $usuario->rol;
+                    $_SESSION["usuario"] = $result[0]->usuario;
+                    $_SESSION["idUsuario"] = $result[0]->id;
+                    $_SESSION["foto"] = $result[0]->foto;
+                    $_SESSION["rol"] =$result[0]->rol;
 
                     $devolver = true;
                 
