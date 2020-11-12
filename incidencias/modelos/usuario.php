@@ -1,5 +1,7 @@
 <?php
 
+    include_once("mysqlDB.php");
+
     class Usuario {
 
         private $db;
@@ -10,7 +12,7 @@
          */
         public function __construct() {
 
-            $this->db = new mysqli("localhost","paolo","Gji54@7s","paolo-veneruso");
+            $this->db = new mysqlDB();
 
         }
 
@@ -26,7 +28,7 @@
             session_destroy();
 
             $devolver = false;
-            $result = $this->db->query("SELECT id, usuario, foto, rol
+            $usuario = $this->db->consulta("SELECT id, usuario, foto, rol
                                             FROM usuarios
                                             WHERE usuario = '$usuario' AND
                                             BINARY contrasenya = '$contrasenya'");
